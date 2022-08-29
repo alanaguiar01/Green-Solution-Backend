@@ -7,7 +7,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  BeforeInsert,
 } from 'typeorm';
+import * as argon2 from 'argon2';
 
 @Entity({ name: 'users' })
 export class User {
@@ -40,4 +42,9 @@ export class User {
 
   @ManyToMany(() => Room, (room) => room.members)
   rooms: Room[];
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await argon2.hash(this.password);
+  }
 }

@@ -27,14 +27,11 @@ export class AuthService {
         throw new BadRequestException('user already exist');
       }
       //Hash password
-      const hash = await argon2.hash(createAuthDto.password);
-      const newUser = await this.userService.createUser({
-        ...createAuthDto,
-        password: hash,
-      });
+      // const hash = await argon2.hash(createAuthDto.password);
+      const newUser = await this.userService.createUser(createAuthDto);
       return newUser;
     } catch (err) {
-      throw new HttpException('error request', HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -55,7 +52,7 @@ export class AuthService {
         );
       }
     } catch (err) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

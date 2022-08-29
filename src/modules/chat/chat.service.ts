@@ -24,7 +24,7 @@ export class ChatService {
     client.join(roomsToJoin);
   }
 
-  generatePrivateRoomName(sender: User, receiver: User): string {
+  generateRoomName(sender: User, receiver: User): string {
     if (sender.name.localeCompare(receiver.name) === -1) {
       return receiver.name;
     } else if (sender.name.localeCompare(receiver.name) === 1) {
@@ -36,7 +36,7 @@ export class ChatService {
 
   async checkPrivateRoomExists(sender: User, receiver: User) {
     return await this.roomRepository.findOne({
-      where: { name: this.generatePrivateRoomName(sender, receiver) },
+      where: { name: this.generateRoomName(sender, receiver) },
     });
   }
 
@@ -47,19 +47,19 @@ export class ChatService {
     return 'This action adds a new chat';
   }
 
-  findAll() {
-    return `This action returns all chat`;
+  // findAll() {
+  //   return `This action returns all chat`;
+  // }
+
+  async findById(id: string): Promise<Room> {
+    return await this.roomRepository.findOne({ where: { id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
-  }
+  // update(id: number, updateChatDto: UpdateChatDto) {
+  //   return `This action updates a #${id} chat`;
+  // }
 
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} chat`;
+  // }
 }
