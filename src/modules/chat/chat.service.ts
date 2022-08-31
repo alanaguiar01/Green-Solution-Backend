@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
+import { UserService } from '../user/user.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { Message } from './entities/message.entity';
@@ -14,6 +15,7 @@ export class ChatService {
     private readonly messageRepository: Repository<Message>,
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+    private readonly userService: UserService,
   ) {}
 
   initJoin(user: User, client) {
@@ -24,7 +26,7 @@ export class ChatService {
     client.join(roomsToJoin);
   }
 
-  generateRoomName(sender: User, receiver: User): string {
+  generateRoomName(sender, receiver): string {
     if (sender.name.localeCompare(receiver.name) === -1) {
       return receiver.name;
     } else if (sender.name.localeCompare(receiver.name) === 1) {
@@ -34,18 +36,53 @@ export class ChatService {
     }
   }
 
-  async checkPrivateRoomExists(sender: User, receiver: User) {
-    return await this.roomRepository.findOne({
+  checkPrivateRoomExists(sender, receiver): Promise<Room> {
+    return this.roomRepository.findOne({
       where: { name: this.generateRoomName(sender, receiver) },
     });
   }
 
-  createPrivateRoom(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  async createChat(sender: string, receiver: string): Promise<Room> {
+    try {
+      const Sender = await this.userService.findOneById(sender);
+      const Receiver = await this.userService.findOneById(receiver);
+      const room = await this.checkPrivateRoomExists(Sender, Receiver);
+      if (!room) {
+        const newRoom = this.roomRepository.create({
+          name: this.generateRoomName(Sender, Receiver),
+          members: [Sender, Receiver],
+        });
+        return await this.roomRepository.save(newRoom);
+      } else {
+        return room;
+      }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+    }
   }
-  createPublicRoom(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
-  }
+
+  // async createMessage(
+  //   sender: User,
+  //   receiver: User,
+  //   msg: string,
+  // ): Promise<Message> {
+  //   let room = await this.checkPrivateRoomExists(sender, receiver);
+  //   if (!room) {
+  //     room = await this.createChat(sender, receiver);
+  //   }
+  //   return this.messageRepository.save({
+  //     text: msg,
+  //     sender: sender,
+  //     room: room,
+  //   });
+  // }
+
+  // createPrivateRoom(createChatDto: CreateChatDto) {
+  //   return 'This action adds a new chat';
+  // }
+  // createPublicRoom(createChatDto: CreateChatDto) {
+  //   return 'This action adds a new chat';
+  // }
 
   // findAll() {
   //   return `This action returns all chat`;

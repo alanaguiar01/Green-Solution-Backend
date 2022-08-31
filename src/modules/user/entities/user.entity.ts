@@ -47,4 +47,10 @@ export class User {
   async hashPassword() {
     this.password = await argon2.hash(this.password);
   }
+
+  toJSON() {
+    const obj = { ...this };
+    delete obj.password;
+    return obj;
+  }
 }
