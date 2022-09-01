@@ -15,6 +15,7 @@ import { LoggerMiddleware } from './middleware/auth.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { ChatModule } from './modules/chat/chat.module';
 import { ResetPasswordModule } from './modules/reset-password/reset-password.module';
+import { ChatGateway } from './modules/chat/chat.gateway';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { ResetPasswordModule } from './modules/reset-password/reset-password.mod
     ResetPasswordModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

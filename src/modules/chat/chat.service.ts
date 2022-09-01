@@ -26,7 +26,7 @@ export class ChatService {
     client.join(roomsToJoin);
   }
 
-  generateRoomName(sender, receiver): string {
+  generateRoomName(sender: User, receiver: User): string {
     if (sender.name.localeCompare(receiver.name) === -1) {
       return receiver.name;
     } else if (sender.name.localeCompare(receiver.name) === 1) {
@@ -36,46 +36,48 @@ export class ChatService {
     }
   }
 
-  checkPrivateRoomExists(sender, receiver): Promise<Room> {
+  checkPrivateRoomExists(sender: any, receiver: any): Promise<Room> {
     return this.roomRepository.findOne({
       where: { name: this.generateRoomName(sender, receiver) },
     });
   }
 
-  async createChat(sender: string, receiver: string): Promise<Room> {
+  async createRoom(sender: any, receiver: any): Promise<Room> {
     try {
       const Sender = await this.userService.findOneById(sender);
       const Receiver = await this.userService.findOneById(receiver);
-      const room = await this.checkPrivateRoomExists(Sender, Receiver);
-      if (!room) {
-        const newRoom = this.roomRepository.create({
-          name: this.generateRoomName(Sender, Receiver),
-          members: [Sender, Receiver],
-        });
-        return await this.roomRepository.save(newRoom);
-      } else {
-        return room;
-      }
+      const newRoom = this.roomRepository.create({
+        name: this.generateRoomName(Sender, Receiver),
+        members: [Sender, Receiver],
+      });
+      return await this.roomRepository.save(newRoom);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.FORBIDDEN);
     }
   }
 
-  // async createMessage(
-  //   sender: User,
-  //   receiver: User,
-  //   msg: string,
-  // ): Promise<Message> {
-  //   let room = await this.checkPrivateRoomExists(sender, receiver);
-  //   if (!room) {
-  //     room = await this.createChat(sender, receiver);
-  //   }
-  //   return this.messageRepository.save({
-  //     text: msg,
-  //     sender: sender,
-  //     room: room,
-  //   });
-  // }
+  async createMessage(
+    sender: any,
+    receiver: any,
+    msg: string,
+  ): Promise<Message> {
+    try {
+      const Sender = await this.userService.findOneById(sender);
+      const Receiver = await this.userService.findOneById(receiver);
+      let room = await this.checkPrivateRoomExists(Sender, Receiver);
+      if (!room) {
+        room = await this.createRoom(Sender, Receiver);
+      }
+      const message = this.messageRepository.create({
+        text: msg,
+        room: room,
+        sender: Sender,
+      });
+      return await this.messageRepository.save(message);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+    }
+  }
 
   // createPrivateRoom(createChatDto: CreateChatDto) {
   //   return 'This action adds a new chat';

@@ -18,12 +18,12 @@ export class ChatController {
 
   @Post('room')
   createRoom(@Body() data: any) {
-    return this.chatService.createChat(data.sender, data.receiver);
+    return this.chatService.createRoom(data.sender, data.receiver);
   }
-  // @Post('message')
-  // createMessage(@Body() data: any) {
-  //   return this.chatService.createMessage(data.sender, data.receiver, data.msg);
-  // }
+  @Post('message')
+  createMessage(@Body() data: any) {
+    return this.chatService.createMessage(data.sender, data.receiver, data.msg);
+  }
 
   // @Get()
   // findAll() {
