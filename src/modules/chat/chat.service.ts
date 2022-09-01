@@ -7,7 +7,10 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { Message } from './entities/message.entity';
 import { Room } from './entities/room.entity';
-
+import { Socket } from 'socket.io';
+import { parse } from 'cookie';
+import { AuthService } from '../auth/auth.service';
+import { WsException } from '@nestjs/websockets';
 @Injectable()
 export class ChatService {
   constructor(
@@ -16,6 +19,7 @@ export class ChatService {
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
     private readonly userService: UserService,
+    private readonly authService: AuthService,
   ) {}
 
   initJoin(user: User, client) {
@@ -77,6 +81,18 @@ export class ChatService {
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.FORBIDDEN);
     }
+  }
+
+  async getUserFromSocket(socket: Socket) {
+    const cookie = socket.handshake.headers.cookie;
+    const { Authentication: authenticationToken } = parse(cookie);
+    const user = await this.authService.getUserFromAuthenticationToken(
+      authenticationToken,
+    );
+    if (!user) {
+      throw new WsException('Invalid credentials.');
+    }
+    return user;
   }
 
   // createPrivateRoom(createChatDto: CreateChatDto) {

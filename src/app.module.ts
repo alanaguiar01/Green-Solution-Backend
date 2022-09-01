@@ -38,7 +38,7 @@ import { ChatGateway } from './modules/chat/chat.gateway';
     ResetPasswordModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

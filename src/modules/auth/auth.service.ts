@@ -10,6 +10,7 @@ import { AuthDto } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as argon2 from 'argon2';
 import { TokenService } from 'src/modules/token/token.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly tokenService: TokenService,
+    private readonly configService: ConfigService,
   ) {}
   async singUp(createAuthDto: CreateUserDto): Promise<any> {
     try {
@@ -53,6 +55,15 @@ export class AuthService {
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async getUserFromAuthenticationToken(token: string) {
+    const payload = this.jwtService.verify(token, {
+      secret: this.configService.get('JWT_ACCESS_SECRET'),
+    });
+    if (payload.userId) {
+      return this.userService.findOneById(payload.userId);
     }
   }
 }
