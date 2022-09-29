@@ -1,4 +1,3 @@
-import { Role } from 'src/common/constants/role-type';
 import { Room } from 'src/modules/chat/entities/room.entity';
 import {
   Column,
@@ -10,6 +9,8 @@ import {
   BeforeInsert,
 } from 'typeorm';
 import * as argon2 from 'argon2';
+import { Permission } from 'src/modules/permissions/entities/permission.entity';
+import { Role } from 'src/modules/roles/entities/role.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -37,11 +38,14 @@ export class User {
   @Column({ nullable: true })
   password: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.USER })
-  role: Role;
-
   @ManyToMany(() => Room, (room) => room.members)
   rooms: Room[];
+
+  @ManyToMany(() => Role)
+  roles: Role[];
+
+  @ManyToMany(() => Permission)
+  permissions: Permission[];
 
   @BeforeInsert()
   async hashPassword() {

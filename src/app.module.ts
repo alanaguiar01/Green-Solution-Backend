@@ -16,6 +16,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ChatModule } from './modules/chat/chat.module';
 import { ResetPasswordModule } from './modules/reset-password/reset-password.module';
 import { ChatGateway } from './modules/chat/chat.gateway';
+import { RolesModule } from './modules/roles/roles.module';
+import { PermissionsModule } from './modules/permissions/permissions.module';
 
 @Module({
   imports: [
@@ -36,14 +38,16 @@ import { ChatGateway } from './modules/chat/chat.gateway';
     JwtModule,
     ChatModule,
     ResetPasswordModule,
+    RolesModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes({ path: '/', method: RequestMethod.ALL });
-  }
+export class AppModule {
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(LoggerMiddleware)
+  //     .forRoutes({ path: '/', method: RequestMethod.ALL });
+  // }
 }

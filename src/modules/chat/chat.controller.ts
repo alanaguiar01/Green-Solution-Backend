@@ -8,8 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
+// import { CreateChatDto } from './dto/create-chat.dto';
+// import { UpdateChatDto } from './dto/update-chat.dto';
 import { User } from '../user/entities/user.entity';
 
 @Controller('chat')
