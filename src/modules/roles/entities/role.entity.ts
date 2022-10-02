@@ -1,9 +1,9 @@
 import { Permission } from 'src/modules/permissions/entities/permission.entity';
-import { User } from 'src/modules/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -25,9 +25,11 @@ export class Role {
   })
   createdAt: Date;
 
-  @ManyToMany(() => User)
-  users: User[];
-
-  @ManyToMany(() => Permission)
+  @ManyToMany(() => Permission, { cascade: true })
+  @JoinTable({
+    name: 'permissions_roles',
+    joinColumns: [{ name: 'role_id' }],
+    inverseJoinColumns: [{ name: 'permission_id' }],
+  })
   permissions: Permission[];
 }

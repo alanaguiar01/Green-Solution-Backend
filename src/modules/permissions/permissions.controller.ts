@@ -15,19 +15,19 @@ import { UpdatePermissionDto } from './dto/update-permission.dto';
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createPermissionDto: CreatePermissionDto) {
     return this.permissionsService.create(createPermissionDto);
   }
 
-  @Get()
+  @Get('all-permissions')
   findAll() {
     return this.permissionsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.permissionsService.findOne(+id);
+  @Get(':name')
+  findOne(@Param('name') name: string) {
+    return this.permissionsService.findOne(name);
   }
 
   @Patch(':id')

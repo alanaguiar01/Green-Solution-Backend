@@ -10,6 +10,7 @@ import {
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { RolePermissionsRequest } from './dto/role-permissions.dto';
 
 @Controller('roles')
 export class RolesController {
@@ -25,9 +26,9 @@ export class RolesController {
     return this.rolesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rolesService.findOne(id);
+  @Get(':name')
+  findOne(@Param('name') name: string) {
+    return this.rolesService.findOne(name);
   }
 
   @Patch(':id')
@@ -38,5 +39,13 @@ export class RolesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.rolesService.remove(+id);
+  }
+
+  @Post('createRolePermission/:roleId')
+  createRolePermission(
+    @Body() { permissions }: RolePermissionsRequest,
+    @Param('roleId') roleId: string,
+  ) {
+    return this.rolesService.createRolePermission({ roleId, permissions });
   }
 }

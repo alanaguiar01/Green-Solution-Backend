@@ -1,4 +1,6 @@
-import { Controller, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Post, Body } from '@nestjs/common';
+import { UserACLRequest } from './dto/user-acl-request.dto';
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -18,5 +20,10 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.deleteUser(id);
+  }
+
+  @Post('acl')
+  accessUserControl(@Body() userACLRequest: UserACLRequest) {
+    return this.userService.CreateUserAccessControlListService(userACLRequest);
   }
 }
