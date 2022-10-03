@@ -1,4 +1,14 @@
-import { Controller, Get, Param, Delete, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Delete,
+  Post,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
+import RoleGuard from 'src/guards/role1.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { UserACLRequest } from './dto/user-acl-request.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -23,6 +33,7 @@ export class UserController {
   }
 
   @Post('acl')
+  @UseGuards(RoleGuard(['creator']))
   accessUserControl(@Body() userACLRequest: UserACLRequest) {
     return this.userService.CreateUserAccessControlListService(userACLRequest);
   }

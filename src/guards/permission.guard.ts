@@ -1,19 +1,20 @@
 import {
+  Injectable,
   CanActivate,
   ExecutionContext,
   HttpException,
   HttpStatus,
-  Injectable,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { UserService } from 'src/modules/user/user.service';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class PermissionGuard implements CanActivate {
   constructor(
     private readonly userService: UserService,
-    private rolesRoute: string[],
+    private permissionsRoute: string[],
   ) {}
+
   private async canActivateAsync(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     if (request?.user) {
@@ -22,18 +23,19 @@ export class RolesGuard implements CanActivate {
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      const rolesExists = user.roles
-        .map((role) => role.name)
-        .some((role) => this.rolesRoute.includes(role));
-      if (!rolesExists) {
+      const permissionsExists = user.permissions
+        .map((permission) => permission.name)
+        .some((permission) => this.permissionsRoute.includes(permission));
+      if (permissionsExists) {
         throw new HttpException(
-          'Roles not authorized',
+          'Permission not authorized',
           HttpStatus.UNAUTHORIZED,
         );
       }
-      return rolesExists;
+      return permissionsExists;
     }
   }
+
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
