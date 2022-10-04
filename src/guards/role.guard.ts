@@ -42,3 +42,4 @@ const RoleGuard = (rolesRoutes: string[]): Type<CanActivate> => {
   return mixin(RoleGuardMixin);
 };
 export default RoleGuard;
+//depois trocar findbyid por find do repositorio e usa função "in" pra deixar performatico

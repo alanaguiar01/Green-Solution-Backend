@@ -7,10 +7,8 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import RoleGuard from 'src/guards/role1.guard';
-import { RolesGuard } from 'src/guards/roles.guard';
+import RoleGuard from 'src/guards/role.guard';
 import { UserACLRequest } from './dto/user-acl-request.dto';
-import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')

@@ -12,14 +12,15 @@ import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RolePermissionsRequest } from './dto/role-permissions.dto';
-import RoleGuard from 'src/guards/role1.guard';
+import RoleGuard from 'src/guards/role.guard';
+import PermissionGuard from 'src/guards/permission.guard';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post('create')
-  @UseGuards(RoleGuard(['creator']))
+  @UseGuards(RoleGuard(['creator']), PermissionGuard(['create_product']))
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.create(createRoleDto);
   }
