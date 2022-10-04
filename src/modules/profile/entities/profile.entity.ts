@@ -3,7 +3,7 @@ import { BaseModelEntity } from 'src/common/BaseModel.entity';
 import { Post } from 'src/modules/post/entities/post.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'profiles' })
 export class Profile extends BaseModelEntity {
   @Column()
   about: string;

@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { Address } from './entities/address.entity';
 
 @Injectable()
 export class AddressService {
+  constructor(
+    @InjectRepository(Address)
+    private readonly addressRepository: Repository<Address>,
+  ) {}
   create(createAddressDto: CreateAddressDto) {
-    return 'This action adds a new address';
+    const addressExist = this.addressRepository.hasId;
+    if (!addressExist) {
+      throw new HttpException('Address not found', HttpStatus.NOT_FOUND);
+    }
+    const address = this.addressRepository.create(createAddressDto);
+    return this.addressRepository.save(address);
   }
 
   findAll() {
-    return `This action returns all address`;
+    const addressExist = this.addressRepository.hasId;
+    if (!addressExist) {
+      throw new HttpException('Address not found', HttpStatus.NOT_FOUND);
+    }
+    const address = this.addressRepository.find();
+    return address;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} address`;
+  findOne(id: string) {
+    const addressExist = this.addressRepository.hasId;
+    if (!addressExist) {
+      throw new HttpException('Address not found', HttpStatus.NOT_FOUND);
+    }
+    const address = this.addressRepository.find({ where: { id: id } });
+    return address;
   }
 
-  update(id: number, updateAddressDto: UpdateAddressDto) {
-    return `This action updates a #${id} address`;
+  update(id: string, updateAddressDto: UpdateAddressDto) {
+    const addressExist = this.addressRepository.hasId;
+    if (!addressExist) {
+      throw new HttpException('Address not found', HttpStatus.NOT_FOUND);
+    }
+    const address = this.addressRepository.update(
+      { id },
+      {
+        zipCode: updateAddressDto.zipCode,
+      },
+    );
+    return address;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} address`;
+  remove(id: string) {
+    const addressExist = this.addressRepository.hasId;
+    if (!addressExist) {
+      throw new HttpException('Address not found', HttpStatus.NOT_FOUND);
+    }
+    const address = this.addressRepository.delete(id);
+    return address;
   }
 }
