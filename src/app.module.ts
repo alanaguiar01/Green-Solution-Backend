@@ -18,6 +18,11 @@ import { ResetPasswordModule } from './modules/reset-password/reset-password.mod
 import { ChatGateway } from './modules/chat/chat.gateway';
 import { RolesModule } from './modules/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { ProfileModule } from './profile/profile.module';
+import { PostModule } from './post/post.module';
+import { AddressModule } from './address/address.module';
+import { PhotosModule } from './photos/photos.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -40,6 +45,11 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
     ResetPasswordModule,
     RolesModule,
     PermissionsModule,
+    ProfileModule,
+    PostModule,
+    AddressModule,
+    PhotosModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
