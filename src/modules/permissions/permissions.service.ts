@@ -25,26 +25,42 @@ export class PermissionsService {
     }
   }
 
-  findAll() {
-    return `This action returns all permissions`;
+  async findAll() {
+    const permissionExist = await this.permissionRepository.find();
+    if (!permissionExist) {
+      throw new HttpException('Permission not found', HttpStatus.NOT_FOUND);
+    }
+    return permissionExist;
   }
 
   async findOne(name: string) {
-    try {
-      const permission = await this.permissionRepository.findOne({
-        where: { name },
-      });
-      return permission;
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    const permissionExist = await this.permissionRepository.findOneBy({ name });
+    if (!permissionExist) {
+      throw new HttpException('Permission not found', HttpStatus.NOT_FOUND);
     }
+    return permissionExist;
   }
 
-  update(id: number, updatePermissionDto: UpdatePermissionDto) {
-    return `This action updates a #${id} permission`;
+  async update(id: string, updatePermissionDto: UpdatePermissionDto) {
+    const permissionExist = await this.permissionRepository.findOneBy({ id });
+    if (!permissionExist) {
+      throw new HttpException('Permission not found', HttpStatus.NOT_FOUND);
+    }
+    const permission = this.permissionRepository.update(
+      { id },
+      {
+        name: updatePermissionDto.name,
+        description: updatePermissionDto.description,
+      },
+    );
+    return permission;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} permission`;
+  async remove(id: string) {
+    const permissionExist = await this.permissionRepository.delete(id);
+    if (!permissionExist) {
+      throw new HttpException('Permission not found', HttpStatus.NOT_FOUND);
+    }
+    return permissionExist;
   }
 }

@@ -20,26 +20,24 @@ export class PhotosService {
     return this.photoRepository.save(photo);
   }
 
-  findAll() {
-    const photoExist = this.photoRepository.hasId;
+  async findAll() {
+    const photoExist = await this.photoRepository.find();
     if (!photoExist) {
       throw new HttpException('Photo not found', HttpStatus.NOT_FOUND);
     }
-    const photo = this.photoRepository.find();
-    return photo;
+    return photoExist;
   }
 
-  findOne(id: string) {
-    const photoExist = this.photoRepository.hasId;
+  async findOne(id: string) {
+    const photoExist = await this.photoRepository.findOneBy({ id });
     if (!photoExist) {
       throw new HttpException('Photo not found', HttpStatus.NOT_FOUND);
     }
-    const photo = this.photoRepository.findOne({ where: { id: id } });
-    return photo;
+    return photoExist;
   }
 
-  update(id: string, updatePhotoDto: UpdatePhotoDto) {
-    const photoExist = this.photoRepository.hasId;
+  async update(id: string, updatePhotoDto: UpdatePhotoDto) {
+    const photoExist = await this.photoRepository.findOneBy({ id });
     if (!photoExist) {
       throw new HttpException('Photo not found', HttpStatus.NOT_FOUND);
     }
@@ -52,12 +50,11 @@ export class PhotosService {
     return photo;
   }
 
-  remove(id: string) {
-    const photoExist = this.photoRepository.hasId;
-    if (!photoExist) {
+  async remove(id: string) {
+    const photo = await this.photoRepository.delete(id);
+    if (!photo) {
       throw new HttpException('Photo not found', HttpStatus.NOT_FOUND);
     }
-    const photo = this.photoRepository.delete(id);
     return photo;
   }
 }

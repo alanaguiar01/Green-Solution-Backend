@@ -16,37 +16,47 @@ export class RolesService {
     private readonly permissionRepository: Repository<Permission>,
   ) {}
   async create(createRoleDto: CreateRoleDto) {
-    try {
-      const role = await this.findOne(createRoleDto.name);
-      if (role) {
-        return new Error(`Role ${role.name} already exists`);
-      }
-      const createRole = this.roleRepository.create(createRoleDto);
-      return this.roleRepository.save(createRole);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    const role = await this.findOne(createRoleDto.name);
+    if (role) {
+      return new Error(`Role ${role.name} already exists`);
     }
+    const createRole = this.roleRepository.create(createRoleDto);
+    return this.roleRepository.save(createRole);
   }
 
-  findAll() {
-    return `This action returns all roles`;
+  async findAll() {
+    const role = await this.roleRepository.find();
+    if (!role) {
+      throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
+    }
+    return role;
   }
 
   async findOne(name: string) {
-    try {
-      const role = await this.roleRepository.findOne({ where: { name } });
-      return role;
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    const role = await this.roleRepository.findOne({ where: { name } });
+    if (!role) {
+      throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
     }
+    return role;
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(id: string, updateRoleDto: UpdateRoleDto) {
+    const role = await this.roleRepository.update(
+      { id },
+      { name: updateRoleDto.name, description: updateRoleDto.description },
+    );
+    if (!role) {
+      throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
+    }
+    return role;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async remove(id: string) {
+    const role = await this.roleRepository.delete(id);
+    if (!role) {
+      throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
+    }
+    return role;
   }
 
   async createRolePermission(rolePermissionRequest: RolePermissionsRequest) {

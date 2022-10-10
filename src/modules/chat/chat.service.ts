@@ -3,8 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
-// import { CreateChatDto } from './dto/create-chat.dto';
-// import { UpdateChatDto } from './dto/update-chat.dto';
 import { Message } from './entities/message.entity';
 import { Room } from './entities/room.entity';
 import { Socket } from 'socket.io';
@@ -47,17 +45,16 @@ export class ChatService {
   }
 
   async createRoom(sender: any, receiver: any): Promise<Room> {
-    try {
-      const Sender = await this.userService.findOneById(sender);
-      const Receiver = await this.userService.findOneById(receiver);
-      const newRoom = this.roomRepository.create({
-        name: this.generateRoomName(Sender, Receiver),
-        members: [Sender, Receiver],
-      });
-      return await this.roomRepository.save(newRoom);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+    const Sender = await this.userService.findOneById(sender);
+    const Receiver = await this.userService.findOneById(receiver);
+    if (!Receiver) {
+      throw new HttpException('Receiver not found', HttpStatus.NOT_FOUND);
     }
+    const newRoom = this.roomRepository.create({
+      name: this.generateRoomName(Sender, Receiver),
+      members: [Sender, Receiver],
+    });
+    return this.roomRepository.save(newRoom);
   }
 
   async createMessage(
@@ -65,22 +62,18 @@ export class ChatService {
     receiver: any,
     msg: string,
   ): Promise<Message> {
-    try {
-      const Sender = await this.userService.findOneById(sender);
-      const Receiver = await this.userService.findOneById(receiver);
-      let room = await this.checkPrivateRoomExists(Sender, Receiver);
-      if (!room) {
-        room = await this.createRoom(Sender, Receiver);
-      }
-      const message = this.messageRepository.create({
-        text: msg,
-        room: room,
-        sender: Sender,
-      });
-      return await this.messageRepository.save(message);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+    const Sender = await this.userService.findOneById(sender);
+    const Receiver = await this.userService.findOneById(receiver);
+    let room = await this.checkPrivateRoomExists(Sender, Receiver);
+    if (!room) {
+      room = await this.createRoom(Sender, Receiver);
     }
+    const message = this.messageRepository.create({
+      text: msg,
+      room: room,
+      sender: Sender,
+    });
+    return this.messageRepository.save(message);
   }
 
   async getUserFromSocket(socket: Socket) {

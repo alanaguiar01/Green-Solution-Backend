@@ -21,40 +21,32 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
   async singUp(createAuthDto: CreateUserDto): Promise<any> {
-    try {
-      const userExists = await this.userService.findOneByEmail(
-        createAuthDto.email,
-      );
-      if (userExists) {
-        throw new BadRequestException('user already exist');
-      }
-      //Hash password
-      // const hash = await argon2.hash(createAuthDto.password);
-      const newUser = await this.userService.createUser(createAuthDto);
-      return newUser;
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    const userExists = await this.userService.findOneByEmail(
+      createAuthDto.email,
+    );
+    if (userExists) {
+      throw new BadRequestException('user already exist');
     }
+    //Hash password
+    // const hash = await argon2.hash(createAuthDto.password);
+    const newUser = await this.userService.createUser(createAuthDto);
+    return newUser;
   }
 
   async signIn(dto: AuthDto): Promise<any> {
-    try {
-      const user = await this.userService.findOneByEmail(dto.email);
-      const passwordMatches = await argon2.verify(user.password, dto.password);
-      if (passwordMatches) {
-        const token = this.jwtService.sign({ sub: user.id, email: user.email });
-        this.tokenService.save(token, user.email);
-        return {
-          access_token: token,
-        };
-      } else {
-        throw new HttpException(
-          'Email or Password wrong',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    const user = await this.userService.findOneByEmail(dto.email);
+    const passwordMatches = await argon2.verify(user.password, dto.password);
+    if (passwordMatches) {
+      const token = this.jwtService.sign({ sub: user.id, email: user.email });
+      this.tokenService.save(token, user.email);
+      return {
+        access_token: token,
+      };
+    } else {
+      throw new HttpException(
+        'Email or Password wrong',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 

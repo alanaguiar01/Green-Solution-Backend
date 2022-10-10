@@ -38,8 +38,8 @@ export class ProfileService {
     return profileExists;
   }
 
-  update(id: string, updateProfileDto: UpdateProfileDto) {
-    const profileExists = this.profileRepository.hasId;
+  async update(id: string, updateProfileDto: UpdateProfileDto) {
+    const profileExists = await this.profileRepository.findOneBy({ id });
     if (!profileExists) {
       throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
     }
@@ -53,8 +53,8 @@ export class ProfileService {
     return updateProfile;
   }
 
-  remove(id: string) {
-    const profileExists = this.profileRepository.hasId;
+  async remove(id: string) {
+    const profileExists = await this.profileRepository.findOneBy({ id });
     if (!profileExists) {
       throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
     }

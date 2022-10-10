@@ -22,47 +22,41 @@ export class TokenService {
     private readonly authService: AuthService,
   ) {}
   async save(token: string, email: string) {
-    try {
-      const objToken = await this.tokenRepository.findOne({ where: { email } });
-      if (objToken) {
-        this.tokenRepository.update(objToken.id, { token });
-      } else {
-        this.tokenRepository.insert({
-          token: token,
-          email: email,
-        });
-      }
-    } catch (err) {
-      throw new HttpException('Error saving token', err);
+    const objToken = await this.tokenRepository.findOne({ where: { email } });
+    if (objToken) {
+      this.tokenRepository.update(objToken.id, { token });
+    } else {
+      this.tokenRepository.insert({
+        token: token,
+        email: email,
+      });
     }
   }
 
   async refreshToken(oldToken: string) {
-    try {
-      const objToken = await this.tokenRepository.findOne({
-        where: { token: oldToken },
-      });
-      const user = await this.userService.findOneByEmail(objToken.email);
-      return this.authService.signIn(user);
-    } catch (err) {
-      return new HttpException(err, HttpStatus.UNAUTHORIZED);
+    const objToken = await this.tokenRepository.findOne({
+      where: { token: oldToken },
+    });
+    if (!objToken) {
+      throw new HttpException('Not has token', HttpStatus.UNAUTHORIZED);
     }
+    const user = await this.userService.findOneByEmail(objToken.email);
+    if (!user) {
+      throw new HttpException('Not found user', HttpStatus.NOT_FOUND);
+    }
+    return this.authService.signIn(user);
   }
 
   async getUserByToken(token: string): Promise<User> {
-    try {
-      token = token.replace('Bearer ', '').trim();
-      const objToken: Token = await this.tokenRepository.findOne({
-        where: { token },
-      });
-      if (objToken) {
-        const user = await this.userService.findOneByEmail(objToken.email);
-        return user;
-      } else {
-        return null;
-      }
-    } catch (err) {
-      throw new HttpException('Error saving token', err);
+    token = token.replace('Bearer ', '').trim();
+    const objToken: Token = await this.tokenRepository.findOne({
+      where: { token },
+    });
+    if (objToken) {
+      const user = await this.userService.findOneByEmail(objToken.email);
+      return user;
+    } else {
+      throw new HttpException('Error saving token', HttpStatus.BAD_REQUEST);
     }
   }
 }

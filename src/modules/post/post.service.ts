@@ -20,26 +20,24 @@ export class PostService {
     return this.postRepository.save(post);
   }
 
-  findAll() {
-    const postExist = this.postRepository.hasId;
+  async findAll() {
+    const postExist = await this.postRepository.find();
     if (!postExist) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
-    const post = this.postRepository.find();
-    return post;
+    return postExist;
   }
 
-  findOne(id: string) {
-    const postExist = this.postRepository.hasId;
+  async findOne(id: string) {
+    const postExist = await this.postRepository.findOneBy({ id });
     if (!postExist) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
-    const post = this.postRepository.findOne({ where: { id } });
-    return post;
+    return postExist;
   }
 
-  update(id: string, updatePostDto: UpdatePostDto) {
-    const postExist = this.postRepository.hasId;
+  async update(id: string, updatePostDto: UpdatePostDto) {
+    const postExist = await this.postRepository.findOneBy({ id });
     if (!postExist) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
@@ -54,12 +52,11 @@ export class PostService {
     return post;
   }
 
-  remove(id: string) {
-    const postExist = this.postRepository.hasId;
+  async remove(id: string) {
+    const postExist = await this.postRepository.delete(id);
     if (!postExist) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
-    const post = this.postRepository.delete(id);
-    return post;
+    return postExist;
   }
 }

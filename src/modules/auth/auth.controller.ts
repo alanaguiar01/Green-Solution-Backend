@@ -1,4 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import PermissionGuard from 'src/guards/permission.guard';
+import RoleGuard from 'src/guards/role.guard';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,6 +15,10 @@ export class AuthController {
   }
 
   @Post('signin')
+  @UseGuards(
+    RoleGuard(['creator', 'manager', 'employer', 'user']),
+    PermissionGuard(['signin']),
+  )
   signin(@Body() data: AuthDto) {
     return this.authService.signIn(data);
   }

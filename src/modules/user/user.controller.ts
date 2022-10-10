@@ -7,6 +7,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
+import PermissionGuard from 'src/guards/permission.guard';
 import RoleGuard from 'src/guards/role.guard';
 import { UserACLRequest } from './dto/user-acl-request.dto';
 import { UserService } from './user.service';
@@ -15,23 +16,35 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
+  @Get('allUsers')
+  @UseGuards(
+    RoleGuard(['creator', 'manager', 'employer']),
+    PermissionGuard(['list_user']),
+  )
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get(':id')
+  @Get('oneUser/:id')
+  @UseGuards(
+    RoleGuard(['creator', 'manager', 'employer']),
+    PermissionGuard(['list_user']),
+  )
   findOne(@Param('id') id: string) {
     return this.userService.findOneById(id);
   }
 
-  @Delete(':id')
+  @Delete('deleteUser/:id')
+  @UseGuards(
+    RoleGuard(['creator', 'manager', 'employer']),
+    PermissionGuard(['delete']),
+  )
   remove(@Param('id') id: string) {
     return this.userService.deleteUser(id);
   }
 
   @Post('acl')
-  @UseGuards(RoleGuard(['creator']))
+  @UseGuards(RoleGuard(['creator', 'manager']))
   accessUserControl(@Body() userACLRequest: UserACLRequest) {
     return this.userService.CreateUserAccessControlListService(userACLRequest);
   }

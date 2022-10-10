@@ -24,22 +24,22 @@ export class ResetPasswordService {
     private readonly userService: UserService,
   ) {}
   async sendEmailForgotPassword({ email }: CreateResetPasswordDto) {
-    try {
-      const token = Math.random().toString(36).substring(2, 13);
-      await this.resetPasswordRepository.create({
-        email,
-        token,
-      });
-      const url = `http://localhost:4200/forgotPassword/${token}`;
-      await this.mailerService.sendMail({
-        to: email,
-        subject: 'Forgot Password',
-        html: `Click <a href="${url}">here</a> to reset password`,
-      });
-      return await this.resetPasswordRepository.save({ email, token });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    const token = Math.random().toString(36).substring(2, 13);
+    const createEmail = this.resetPasswordRepository.create({
+      email,
+      token,
+    });
+
+    if (!createEmail) {
+      throw new HttpException('email or token not found', HttpStatus.NOT_FOUND);
     }
+    const url = `http://localhost:4200/forgotPassword/${token}`;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Forgot Password',
+      html: `Click <a href="${url}">here</a> to reset password`,
+    });
+    return this.resetPasswordRepository.save(createEmail);
   }
 
   async forgotPassword({
@@ -47,38 +47,36 @@ export class ResetPasswordService {
     confirm_password,
     new_password,
   }: ForgotPasswordDto) {
-    try {
-      if (new_password !== confirm_password) {
-        throw new BadRequestException('passwords do not match');
-      }
-      const reset = await this.findOne(token);
-      const email = reset.email;
-      const user = await this.userService.findOneByEmail(email);
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-      const hashPassword = await argon2.hash(new_password);
-      return await this.userService.update(user.id, { password: hashPassword });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    if (new_password !== confirm_password) {
+      throw new BadRequestException('passwords do not match');
     }
+    const reset = await this.findOne(token);
+    const email = reset.email;
+    const user = await this.userService.findOneByEmail(email);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const hashPassword = await argon2.hash(new_password);
+    return this.userService.update(user.id, { password: hashPassword });
   }
 
   async changePassword({ id, newPassword, oldPassword }: ChangePasswordDto) {
-    try {
-      const user = await this.userService.findOneById(id);
-      const passwordValid = await argon2.verify(user.password, oldPassword);
-      if (!passwordValid) {
-        throw new BadRequestException('Invalid password');
-      }
-      const hashPassword = await argon2.hash(newPassword);
-      return this.userService.update(id, { password: hashPassword });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    const user = await this.userService.findOneById(id);
+    const passwordValid = await argon2.verify(user.password, oldPassword);
+    if (!passwordValid) {
+      throw new BadRequestException('Invalid password');
     }
+    const hashPassword = await argon2.hash(newPassword);
+    return this.userService.update(id, { password: hashPassword });
   }
 
   findOne(token: string) {
-    return this.resetPasswordRepository.findOne({ where: { token } });
+    const tokenFound = this.resetPasswordRepository.findOne({
+      where: { token },
+    });
+    if (!tokenFound) {
+      throw new BadRequestException('token not found');
+    }
+    return tokenFound;
   }
 }
