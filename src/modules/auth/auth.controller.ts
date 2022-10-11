@@ -1,8 +1,6 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import PermissionGuard from 'src/guards/permission.guard';
-import RoleGuard from 'src/guards/role.guard';
+import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { LocalAuthGuard } from 'src/guards/local-strategy.guard';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('auth')
@@ -14,13 +12,10 @@ export class AuthController {
     return this.authService.singUp(createUserDto);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('signin')
-  @UseGuards(
-    RoleGuard(['creator', 'manager', 'employer', 'user']),
-    PermissionGuard(['signin']),
-  )
-  signin(@Body() data: AuthDto) {
-    return this.authService.signIn(data);
+  signin(@Request() req) {
+    return this.authService.signIn(req.user);
   }
 
   // @Get('logout')

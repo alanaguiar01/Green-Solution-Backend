@@ -16,10 +16,6 @@ export class RolesService {
     private readonly permissionRepository: Repository<Permission>,
   ) {}
   async create(createRoleDto: CreateRoleDto) {
-    const role = await this.findOne(createRoleDto.name);
-    if (role) {
-      return new Error(`Role ${role.name} already exists`);
-    }
     const createRole = this.roleRepository.create(createRoleDto);
     return this.roleRepository.save(createRole);
   }

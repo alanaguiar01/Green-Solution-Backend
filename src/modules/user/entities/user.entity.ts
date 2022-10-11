@@ -4,6 +4,7 @@ import * as argon2 from 'argon2';
 import { Permission } from 'src/modules/permissions/entities/permission.entity';
 import { Role } from 'src/modules/roles/entities/role.entity';
 import { BaseModelEntity } from 'src/common/BaseModel.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'users' })
 export class User extends BaseModelEntity {
@@ -13,15 +14,16 @@ export class User extends BaseModelEntity {
   @Column({ unique: true, nullable: true })
   email: string;
 
+  @Exclude()
   @Column({ nullable: true })
   password: string;
 
   @ManyToMany(() => Room, (room) => room.members)
   rooms: Room[];
 
-  @ManyToMany(() => Role, { cascade: true })
+  @ManyToMany(() => Role, { cascade: true, nullable: false })
   @JoinTable({
-    name: 'users-roles',
+    name: 'users_roles',
     joinColumns: [{ name: 'user_id' }],
     inverseJoinColumns: [{ name: 'role_id' }],
   })

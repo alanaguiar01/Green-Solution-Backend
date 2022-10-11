@@ -10,7 +10,7 @@ import { AuthDto } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as argon2 from 'argon2';
 import { TokenService } from 'src/modules/token/token.service';
-import { ConfigService } from '@nestjs/config';
+import { RolesService } from '../roles/roles.service';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +18,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly tokenService: TokenService,
-    private readonly configService: ConfigService,
+    private readonly rolesService: RolesService,
   ) {}
   async singUp(createAuthDto: CreateUserDto): Promise<any> {
     const userExists = await this.userService.findOneByEmail(
@@ -27,33 +27,38 @@ export class AuthService {
     if (userExists) {
       throw new BadRequestException('user already exist');
     }
-    //Hash password
-    // const hash = await argon2.hash(createAuthDto.password);
     const newUser = await this.userService.createUser(createAuthDto);
     return newUser;
   }
 
-  async signIn(dto: AuthDto): Promise<any> {
-    const user = await this.userService.findOneByEmail(dto.email);
-    const passwordMatches = await argon2.verify(user.password, dto.password);
-    if (passwordMatches) {
-      const token = this.jwtService.sign({ sub: user.id, email: user.email });
-      this.tokenService.save(token, user.email);
-      return {
-        access_token: token,
-      };
-    } else {
-      throw new HttpException(
-        'Email or Password wrong',
-        HttpStatus.BAD_REQUEST,
-      );
+  async validateUser(authDto: AuthDto): Promise<any> {
+    const user = await this.userService.findOneByEmail(authDto.email);
+    if (user && argon2.verify(user.password, authDto.password)) {
+      const { password, ...result } = user;
+      return result;
     }
+    return null;
+  }
+
+  async signIn(user: any) {
+    const payload = { email: user.email, sub: user.id };
+    const token = this.jwtService.sign(payload);
+    this.tokenService.save(token, user.email);
+    return {
+      access_token: token,
+    };
+  }
+
+  async loginWithAuth(token: string) {
+    const user = await this.tokenService.getUserByToken(token);
+    if (user) {
+      return this.signIn(user);
+    }
+    throw new HttpException('token invalid', HttpStatus.UNAUTHORIZED);
   }
 
   async getUserFromAuthenticationToken(token: string) {
-    const payload = this.jwtService.verify(token, {
-      secret: this.configService.get('JWT_ACCESS_SECRET'),
-    });
+    const payload = this.jwtService.verify(token);
     if (payload.userId) {
       return this.userService.findOneById(payload.userId);
     }

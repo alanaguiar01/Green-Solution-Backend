@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import RequestWithUser from 'src/common/constants/request-user.interfaxe';
 import { UserService } from 'src/modules/user/user.service';
-import { JwtAuthGuard } from './auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 const RoleGuard = (rolesRoutes: string[]): Type<CanActivate> => {
   @Injectable()
@@ -26,9 +26,10 @@ const RoleGuard = (rolesRoutes: string[]): Type<CanActivate> => {
         if (!user) {
           throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
-        const rolesExists = user.roles
-          .map((role) => role.name)
-          .some((role) => rolesRoutes.includes(role));
+        const rolesExists = user.roles.some((role) =>
+          rolesRoutes.includes(role.name),
+        );
+
         if (!rolesExists) {
           throw new HttpException(
             'Roles not authorized',

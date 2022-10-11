@@ -19,9 +19,19 @@ export class UserService {
     private readonly rolesRepository: Repository<Role>,
   ) {}
 
-  createUser(userRegisterDto: CreateUserDto) {
-    const user = this.userRepository.create(userRegisterDto);
-    return this.userRepository.save(user);
+  async createUser(userRegisterDto: CreateUserDto) {
+    const role = await this.rolesRepository.findOne({
+      where: { name: 'user' },
+    });
+    if (!role) {
+      throw new HttpException('role not found', HttpStatus.NOT_FOUND);
+    }
+    const user = this.userRepository.create({
+      roles: [role],
+      ...userRegisterDto,
+    });
+    await this.userRepository.save(user);
+    return user;
   }
 
   findAll() {
@@ -35,7 +45,7 @@ export class UserService {
   findOneById(id: string) {
     const getOneUser = this.userRepository.findOne({
       where: { id },
-      relations: { permissions: true, roles: true },
+      relations: ['permissions', 'roles'],
     });
     if (!getOneUser) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

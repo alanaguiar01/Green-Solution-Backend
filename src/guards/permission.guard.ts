@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import RequestWithUser from 'src/common/constants/request-user.interfaxe';
 import { UserService } from 'src/modules/user/user.service';
-import { JwtAuthGuard } from './auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 const PermissionGuard = (permissionRoutes: string[]): Type<CanActivate> => {
   @Injectable()
@@ -26,9 +26,9 @@ const PermissionGuard = (permissionRoutes: string[]): Type<CanActivate> => {
         if (!user) {
           throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
-        const permissionExists = user.permissions
-          .map((permission) => permission.name)
-          .some((permission) => permissionRoutes.includes(permission));
+        const permissionExists = user.permissions.some((permission) =>
+          permissionRoutes.includes(permission.name),
+        );
         if (!permissionExists) {
           throw new HttpException(
             'Permissions not authorized',

@@ -1,31 +1,32 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { AccessTokenStrategy } from './strategies/acess-token.strategy';
+import { JwtStrategy } from './strategies/jwt-token.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'src/modules/user/user.module';
-import { ConfigModule } from '@nestjs/config';
 import { TokenModule } from 'src/modules/token/token.module';
 import { PassportModule } from '@nestjs/passport';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { LocalStrategy } from './strategies/local-strategy';
+import { RolesModule } from '../roles/roles.module';
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: process.env.JWT_ACCESS_SECRET,
-      signOptions: {
-        expiresIn: '1m',
+    PassportModule,
+    JwtModule.registerAsync({
+      useFactory() {
+        return {
+          secret: process.env.JWT_ACCESS_SECRET,
+          signOptions: { expiresIn: '60s' },
+        };
       },
     }),
     forwardRef(() => UserModule),
     TypeOrmModule,
-    ConfigModule,
     TokenModule,
+    RolesModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, AccessTokenStrategy],
-  exports: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

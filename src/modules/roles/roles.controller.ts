@@ -20,10 +20,10 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post('create')
-  @UseGuards(
-    RoleGuard(['creator', 'manager']),
-    PermissionGuard(['create_role']),
-  )
+  // @UseGuards(
+  //   RoleGuard(['creator', 'manager']),
+  //   PermissionGuard(['create_role']),
+  // )
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.create(createRoleDto);
   }
@@ -65,10 +65,10 @@ export class RolesController {
   }
 
   @Post('createRolePermission/:roleId')
-  @UseGuards(
-    RoleGuard(['creator', 'manager']),
-    PermissionGuard(['create_role_permission']),
-  )
+  // @UseGuards(
+  //   RoleGuard(['creator', 'manager']),
+  //   PermissionGuard(['create_role_permission']),
+  // )
   createRolePermission(
     @Body() { permissions }: RolePermissionsRequest,
     @Param('roleId') roleId: string,

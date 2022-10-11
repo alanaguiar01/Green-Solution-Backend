@@ -19,10 +19,10 @@ export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
   @Post('create')
-  @UseGuards(
-    RoleGuard(['creator', 'manager', 'employer']),
-    PermissionGuard(['create_permission']),
-  )
+  // @UseGuards(
+  //   RoleGuard(['creator', 'manager', 'employer']),
+  //   PermissionGuard(['create_permission']),
+  // )
   create(@Body() createPermissionDto: CreatePermissionDto) {
     return this.permissionsService.create(createPermissionDto);
   }

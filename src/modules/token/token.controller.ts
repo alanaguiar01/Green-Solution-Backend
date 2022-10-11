@@ -8,11 +8,11 @@ import { TokenService } from './token.service';
 export class TokenController {
   constructor(private tokenService: TokenService) {}
 
-  @Put('refresh')
   @UseGuards(
     RoleGuard(['creator', 'manager', 'employer', 'user']),
     PermissionGuard(['update_token']),
   )
+  @Put('refresh')
   refreshToken(@Body() data: RefreshTokenDto) {
     return this.tokenService.refreshToken(data.oldToken);
   }

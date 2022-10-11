@@ -12,17 +12,19 @@ export class PermissionsService {
     private readonly permissionRepository: Repository<Permission>,
   ) {}
   async create(createPermissionDto: CreatePermissionDto) {
-    try {
-      const permissions = await this.findOne(createPermissionDto.name);
-      if (permissions) {
-        return new Error(`Role ${permissions.name} already exists`);
-      }
-      const createPermission =
-        this.permissionRepository.create(createPermissionDto);
-      return this.permissionRepository.save(createPermission);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    // try {
+    const permissions = await this.permissionRepository.findOneBy({
+      name: createPermissionDto.name,
+    });
+    if (permissions) {
+      return new Error(`Role ${permissions.name} already exists`);
     }
+    const createPermission =
+      this.permissionRepository.create(createPermissionDto);
+    return this.permissionRepository.save(createPermission);
+    // } catch (err) {
+    //   throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    // }
   }
 
   async findAll() {

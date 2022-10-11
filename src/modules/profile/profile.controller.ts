@@ -45,7 +45,7 @@ export class ProfileController {
     return this.profileService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('update-profile/:id')
   @UseGuards(
     RoleGuard(['creator', 'manager', 'employer', 'user']),
     PermissionGuard(['update_profile']),
@@ -54,7 +54,7 @@ export class ProfileController {
     return this.profileService.update(id, updateProfileDto);
   }
 
-  @Delete(':id')
+  @Delete('delete-profile/:id')
   @UseGuards(
     RoleGuard(['creator', 'manager', 'employer', 'user']),
     PermissionGuard(['delete_profile']),

@@ -44,7 +44,7 @@ export class UserController {
   }
 
   @Post('acl')
-  @UseGuards(RoleGuard(['creator', 'manager']))
+  // @UseGuards(RoleGuard(['creator', 'manager']))
   accessUserControl(@Body() userACLRequest: UserACLRequest) {
     return this.userService.CreateUserAccessControlListService(userACLRequest);
   }
