@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ResetPasswordService } from './reset-password.service';
 import { ResetPasswordController } from './reset-password.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ResetPassword } from './entities/reset-password.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { UserModule } from '../user/user.module';
+import { DatabaseModule } from 'src/database/database.module';
+import { resetPasswordProviders } from './forgot-password.provider';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ResetPassword]),
+    DatabaseModule,
     MailerModule.forRoot({
       transport: { host: 'mailhog', port: 1025 },
       defaults: {
@@ -18,6 +18,6 @@ import { UserModule } from '../user/user.module';
     UserModule,
   ],
   controllers: [ResetPasswordController],
-  providers: [ResetPasswordService],
+  providers: [ResetPasswordService, ...resetPasswordProviders],
 })
 export class ResetPasswordModule {}

@@ -3,17 +3,13 @@ import { TokenService } from './token.service';
 import { TokenController } from './token.controller';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { UserModule } from 'src/modules/user/user.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Token } from './entities/token.entity';
+import { tokenProviders } from './token.provider';
+import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Token]),
-    forwardRef(() => AuthModule),
-    UserModule,
-  ],
+  imports: [DatabaseModule, forwardRef(() => AuthModule), UserModule],
   controllers: [TokenController],
-  providers: [TokenService],
+  providers: [TokenService, ...tokenProviders],
   exports: [TokenService],
 })
 export class TokenModule {}

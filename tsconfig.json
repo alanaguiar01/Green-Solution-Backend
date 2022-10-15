@@ -11,13 +11,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "allowJs": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "build", "dist", ".docker"]
+  "include": ["src", "test"],
+  "exclude": ["dist", "node_modules"]
 }

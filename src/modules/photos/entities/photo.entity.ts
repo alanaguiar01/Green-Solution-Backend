@@ -1,7 +1,7 @@
 import { BaseModelEntity } from 'src/common/BaseModel.entity';
 import { Post } from 'src/modules/post/entities/post.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-@Entity()
+@Entity({ name: 'photos' })
 export class Photo extends BaseModelEntity {
   @Column({ nullable: true })
   url: string;

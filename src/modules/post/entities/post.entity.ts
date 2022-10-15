@@ -10,7 +10,7 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-@Entity()
+@Entity({ name: 'posts' })
 export class Post extends BaseModelEntity {
   @Column()
   name: string;
@@ -25,7 +25,7 @@ export class Post extends BaseModelEntity {
   profile: Profile[];
 
   @OneToOne(() => Category)
-  @JoinColumn()
+  @JoinColumn({ name: 'category_id' })
   categoty: Category;
 
   @OneToMany(() => Photo, (photo) => photo.post)

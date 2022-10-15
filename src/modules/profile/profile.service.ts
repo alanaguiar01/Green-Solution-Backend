@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -8,7 +8,7 @@ import { Profile } from './entities/profile.entity';
 @Injectable()
 export class ProfileService {
   constructor(
-    @InjectRepository(Profile)
+    @Inject('PROFILE_REPOSITORY')
     private readonly profileRepository: Repository<Profile>,
   ) {}
   create(createProfileDto: CreateProfileDto) {

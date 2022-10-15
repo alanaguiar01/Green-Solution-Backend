@@ -15,7 +15,7 @@ import { Token } from './entities/token.entity';
 @Injectable()
 export class TokenService {
   constructor(
-    @InjectRepository(Token)
+    @Inject('TOKEN_REPOSITORY')
     private readonly tokenRepository: Repository<Token>,
     private readonly userService: UserService,
     @Inject(forwardRef(() => AuthService))

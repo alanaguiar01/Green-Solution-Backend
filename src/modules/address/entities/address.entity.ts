@@ -2,7 +2,7 @@ import { BaseModelEntity } from 'src/common/BaseModel.entity';
 import { Profile } from 'src/modules/profile/entities/profile.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'address' })
 export class Address extends BaseModelEntity {
   @Column()
   zipCode: number;

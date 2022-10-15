@@ -1,5 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -8,7 +7,7 @@ import { Category } from './entities/category.entity';
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(Category)
+    @Inject('CATEGORY_REPOSITORY')
     private readonly categoryRepository: Repository<Category>,
   ) {}
   create(createCategoryDto: CreateCategoryDto) {

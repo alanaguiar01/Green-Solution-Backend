@@ -10,7 +10,6 @@ import { AuthDto } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as argon2 from 'argon2';
 import { TokenService } from 'src/modules/token/token.service';
-import { RolesService } from '../roles/roles.service';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +17,6 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly tokenService: TokenService,
-    private readonly rolesService: RolesService,
   ) {}
   async singUp(createAuthDto: CreateUserDto): Promise<any> {
     const userExists = await this.userService.findOneByEmail(

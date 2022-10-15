@@ -1,10 +1,18 @@
 import { Room } from 'src/modules/chat/entities/room.entity';
-import { Column, Entity, ManyToMany, BeforeInsert, JoinTable } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  BeforeInsert,
+  JoinTable,
+  OneToOne,
+} from 'typeorm';
 import * as argon2 from 'argon2';
 import { Permission } from 'src/modules/permissions/entities/permission.entity';
 import { Role } from 'src/modules/roles/entities/role.entity';
 import { BaseModelEntity } from 'src/common/BaseModel.entity';
 import { Exclude } from 'class-transformer';
+import { Profile } from 'src/modules/profile/entities/profile.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseModelEntity {
@@ -17,6 +25,9 @@ export class User extends BaseModelEntity {
   @Exclude()
   @Column({ nullable: true })
   password: string;
+
+  @OneToOne(() => Profile)
+  profile: Profile;
 
   @ManyToMany(() => Room, (room) => room.members)
   rooms: Room[];

@@ -3,12 +3,10 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt-token.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'src/modules/user/user.module';
 import { TokenModule } from 'src/modules/token/token.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local-strategy';
-import { RolesModule } from '../roles/roles.module';
 @Module({
   imports: [
     PassportModule,
@@ -21,9 +19,7 @@ import { RolesModule } from '../roles/roles.module';
       },
     }),
     forwardRef(() => UserModule),
-    TypeOrmModule,
     TokenModule,
-    RolesModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
