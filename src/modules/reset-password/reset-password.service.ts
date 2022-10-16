@@ -23,6 +23,12 @@ export class ResetPasswordService {
     private readonly mailerService: MailerService,
     private readonly userService: UserService,
   ) {}
+  /**
+   * It creates a random token, creates a new entry in the database with the email and token, and then
+   * sends an email to the user with a link to reset their password
+   * @param {CreateResetPasswordDto}  - email - the email address of the user who forgot their password
+   * @returns The token is being returned.
+   */
   async sendEmailForgotPassword({ email }: CreateResetPasswordDto) {
     const token = Math.random().toString(36).substring(2, 13);
     const createEmail = this.resetPasswordRepository.create({
@@ -42,6 +48,12 @@ export class ResetPasswordService {
     return this.resetPasswordRepository.save(createEmail);
   }
 
+  /**
+   * It takes a token, a new password, and a confirmation password, and if the passwords match, it
+   * finds the user associated with the token, hashes the new password, and updates the user's password
+   * @param {ForgotPasswordDto}  - token - the token that was sent to the user's email
+   * @returns The userService.update method is being returned.
+   */
   async forgotPassword({
     token,
     confirm_password,
@@ -60,6 +72,12 @@ export class ResetPasswordService {
     return this.userService.update(user.id, { password: hashPassword });
   }
 
+  /**
+   * It takes in a ChangePasswordDto, finds the user by id, checks if the old password is valid, hashes
+   * the new password, and updates the user with the new password
+   * @param {ChangePasswordDto}  - id - the id of the user
+   * @returns The userService.update method is being returned.
+   */
   async changePassword({ id, newPassword, oldPassword }: ChangePasswordDto) {
     const user = await this.userService.findOneById(id);
     const passwordValid = await argon2.verify(user.password, oldPassword);
@@ -70,6 +88,11 @@ export class ResetPasswordService {
     return this.userService.update(id, { password: hashPassword });
   }
 
+  /**
+   * It finds a token in the database and if it doesn't find it, it throws an error
+   * @param {string} token - The token that was sent to the user's email.
+   * @returns The token found
+   */
   findOne(token: string) {
     const tokenFound = this.resetPasswordRepository.findOne({
       where: { token },

@@ -18,6 +18,11 @@ export class UserService {
     private readonly rolesRepository: Repository<Role>,
   ) {}
 
+  /**
+   * It creates a user with the role of 'user' and saves it to the database
+   * @param {CreateUserDto} userRegisterDto - CreateUserDto
+   * @returns The user object
+   */
   async createUser(userRegisterDto: CreateUserDto) {
     const role = await this.rolesRepository.findOne({
       where: { name: 'user' },
@@ -33,6 +38,10 @@ export class UserService {
     return user;
   }
 
+  /**
+   * It finds all users in the database and returns them
+   * @returns An array of users
+   */
   findAll() {
     const user = this.userRepository.find();
     if (!user) {
@@ -41,6 +50,11 @@ export class UserService {
     return user;
   }
 
+  /**
+   * It finds a user by id, and if it doesn't find one, it throws an error
+   * @param {string} id - string - The id of the user we want to find.
+   * @returns The user object with the id that was passed in.
+   */
   findOneById(id: string) {
     const getOneUser = this.userRepository.findOne({
       where: { id },
@@ -52,6 +66,11 @@ export class UserService {
     return getOneUser;
   }
 
+  /**
+   * It finds a user by email and if it doesn't find one, it throws an error
+   * @param {string} email - The email of the user we want to find.
+   * @returns The user object
+   */
   findOneByEmail(email: string) {
     const user = this.userRepository.findOne({ where: { email } });
     if (!user) {
@@ -60,6 +79,13 @@ export class UserService {
     return user;
   }
 
+  /**
+   * It takes an id and an updateUserDto object as parameters, checks if the user exists, and if it
+   * does, it updates the user with the new data
+   * @param {string} id - The id of the user to be updated.
+   * @param {UpdateUserDto} updateUserDto - UpdateUserDto
+   * @returns The user object
+   */
   update(id: string, updateUserDto: UpdateUserDto) {
     const userExists = this.userRepository.findOneBy({ id });
     if (!userExists) {
@@ -75,6 +101,11 @@ export class UserService {
     return user;
   }
 
+  /**
+   * It deletes a user from the database by id
+   * @param {string} id - string - The id of the user to be deleted
+   * @returns The user that was deleted.
+   */
   deleteUser(id: string) {
     const userExists = this.userRepository.findOneBy({ id });
     if (!userExists) {
@@ -86,6 +117,13 @@ export class UserService {
     return deleteUser;
   }
 
+  /**
+   * It takes a userACLRequest object, finds a user by the userId in the request, checks if the user
+   * exists, checks if the permissions and roles in the request exist, then saves the user with the new
+   * permissions and roles
+   * @param {UserACLRequest} userACLRequest - UserACLRequest
+   * @returns The user object with the new permissions and roles.
+   */
   async CreateUserAccessControlListService(userACLRequest: UserACLRequest) {
     const user = await this.userRepository.findOne({
       where: {

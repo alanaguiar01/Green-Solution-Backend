@@ -5,7 +5,6 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { User } from 'src/modules/user/entities/user.entity';
 import { UserService } from 'src/modules/user/user.service';
@@ -21,6 +20,12 @@ export class TokenService {
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {}
+  /**
+   * It checks if a token exists for a given email, if it does, it updates the token, if it doesn't, it
+   * creates a new token
+   * @param {string} token - The token that will be saved in the database.
+   * @param {string} email - The email address of the user who is requesting a password reset.
+   */
   async save(token: string, email: string) {
     const objToken = await this.tokenRepository.findOne({ where: { email } });
     if (objToken) {
@@ -33,6 +38,11 @@ export class TokenService {
     }
   }
 
+  /**
+   * It takes an old token, finds the user associated with it, and returns a new token
+   * @param {string} oldToken - The token that needs to be refreshed.
+   * @returns The token is being returned.
+   */
   async refreshToken(oldToken: string) {
     const objToken = await this.tokenRepository.findOne({
       where: { token: oldToken },
@@ -47,6 +57,11 @@ export class TokenService {
     return this.authService.signIn(user);
   }
 
+  /**
+   * It takes a token as a parameter, finds the user associated with that token, and returns the user
+   * @param {string} token - The token that was sent in the request header.
+   * @returns The user object
+   */
   async getUserByToken(token: string): Promise<User> {
     token = token.replace('Bearer ', '').trim();
     const objToken: Token = await this.tokenRepository.findOne({

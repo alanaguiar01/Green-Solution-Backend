@@ -16,6 +16,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  /**
+   * It takes a JwtPayload object as an argument, and returns a Promise that resolves to a JwtPayload
+   * object
+   * @param {JwtPayload} payload - JwtPayload
+   * @returns The payload is being returned.
+   */
   async validate(payload: JwtPayload) {
     return payload;
   }
