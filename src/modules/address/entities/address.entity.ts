@@ -1,5 +1,5 @@
-import { BaseEntityModel } from '~/common/baseModel';
-import { Profile } from '~/modules/profile/entities/profile.entity';
+import { BaseEntityModel } from '../../../common/baseModel';
+import { Profile } from '../../profile/entities/profile.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'address' })

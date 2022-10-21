@@ -1,6 +1,6 @@
-import { Address } from '~/modules/address/entities/address.entity';
-import { BaseEntityModel } from '~/common/baseModel';
-import { Post } from '~/modules/post/entities/post.entity';
+import { Address } from '../../address/entities/address.entity';
+import { BaseEntityModel } from '../../../common/baseModel';
+import { Post } from '../../post/entities/post.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity({ name: 'profiles' })

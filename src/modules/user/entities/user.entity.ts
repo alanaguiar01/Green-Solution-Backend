@@ -1,4 +1,4 @@
-import { Room } from '~/modules/chat/entities/room.entity';
+import { Room } from '../../chat/entities/room.entity';
 import {
   Column,
   Entity,
@@ -8,11 +8,11 @@ import {
   OneToOne,
 } from 'typeorm';
 import * as argon2 from 'argon2';
-import { Permission } from '~/modules/permissions/entities/permission.entity';
-import { Role } from '~/modules/roles/entities/role.entity';
+import { Permission } from '../../permissions/entities/permission.entity';
+import { Role } from '../../roles/entities/role.entity';
 import { Exclude } from 'class-transformer';
-import { Profile } from '~/modules/profile/entities/profile.entity';
-import { BaseEntityModel } from '~/common/baseModel';
+import { Profile } from '../../profile/entities/profile.entity';
+import { BaseEntityModel } from '../../../common/baseModel';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntityModel {

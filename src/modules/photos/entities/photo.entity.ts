@@ -1,5 +1,5 @@
-import { BaseEntityModel } from '~/common/baseModel';
-import { Post } from '~/modules/post/entities/post.entity';
+import { BaseEntityModel } from '../../../common/baseModel';
+import { Post } from '../../post/entities/post.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 @Entity({ name: 'photos' })
 export class Photo extends BaseEntityModel {
