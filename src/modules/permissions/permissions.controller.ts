@@ -11,8 +11,8 @@ import {
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
-import RoleGuard from 'src/guards/role.guard';
-import PermissionGuard from 'src/guards/permission.guard';
+import RoleGuard from '~/guards/role.guard';
+import PermissionGuard from '~/guards/permission.guard';
 
 @Controller('permissions')
 export class PermissionsController {

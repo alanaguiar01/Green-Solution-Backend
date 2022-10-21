@@ -1,10 +1,10 @@
-import { BaseModelEntity } from 'src/common/BaseModel.entity';
-import { User } from 'src/modules/user/entities/user.entity';
+import { BaseEntityModel } from '~/common/baseModel';
+import { User } from '~/modules/user/entities/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { Message } from './message.entity';
 
 @Entity({ name: 'rooms' })
-export class Room extends BaseModelEntity {
+export class Room extends BaseEntityModel {
   @Column({ nullable: false })
   name: string;
 

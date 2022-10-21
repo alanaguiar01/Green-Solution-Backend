@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
@@ -7,7 +8,7 @@ import { Address } from './entities/address.entity';
 @Injectable()
 export class AddressService {
   constructor(
-    @Inject('ADDRESS_REPOSITORY')
+    @InjectRepository(Address)
     private readonly addressRepository: Repository<Address>,
   ) {}
   /**

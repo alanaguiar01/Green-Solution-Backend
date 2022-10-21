@@ -1,4 +1,4 @@
-import { Permission } from 'src/modules/permissions/entities/permission.entity';
+import { Permission } from '~/modules/permissions/entities/permission.entity';
 import {
   Column,
   CreateDateColumn,

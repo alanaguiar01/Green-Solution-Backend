@@ -8,8 +8,8 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import PermissionGuard from 'src/guards/permission.guard';
-import RoleGuard from 'src/guards/role.guard';
+import PermissionGuard from '~/guards/permission.guard';
+import RoleGuard from '~/guards/role.guard';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';

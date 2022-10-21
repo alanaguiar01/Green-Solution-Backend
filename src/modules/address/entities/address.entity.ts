@@ -1,9 +1,9 @@
-import { BaseModelEntity } from 'src/common/BaseModel.entity';
-import { Profile } from 'src/modules/profile/entities/profile.entity';
+import { BaseEntityModel } from '~/common/baseModel';
+import { Profile } from '~/modules/profile/entities/profile.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'address' })
-export class Address extends BaseModelEntity {
+export class Address extends BaseEntityModel {
   @Column()
   zipCode: number;
 

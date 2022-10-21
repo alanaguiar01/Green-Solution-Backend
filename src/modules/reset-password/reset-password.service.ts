@@ -3,7 +3,6 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -14,11 +13,12 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPassword } from './entities/reset-password.entity';
 import * as argon2 from 'argon2';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ResetPasswordService {
   constructor(
-    @Inject('RESETPASSWORD_REPOSITORY')
+    @InjectRepository(ResetPassword)
     private readonly resetPasswordRepository: Repository<ResetPassword>,
     private readonly mailerService: MailerService,
     private readonly userService: UserService,

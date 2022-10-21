@@ -1,0 +1,3 @@
+npm run typeorm migration:generate src/database/migrations/$1
+
+#comando para execultar a migration do typeorm ./migration e o nome.

@@ -8,8 +8,8 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import PermissionGuard from 'src/guards/permission.guard';
-import RoleGuard from 'src/guards/role.guard';
+import PermissionGuard from '~/guards/permission.guard';
+import RoleGuard from '~/guards/role.guard';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';

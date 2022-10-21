@@ -7,8 +7,8 @@ import {
   mixin,
   Type,
 } from '@nestjs/common';
-import RequestWithUser from 'src/common/constants/request-user.interfaxe';
-import { UserService } from 'src/modules/user/user.service';
+import RequestWithUser from '~/common/constants/request-user.interfaxe';
+import { UserService } from '~/modules/user/user.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 const PermissionGuard = (permissionRoutes: string[]): Type<CanActivate> => {

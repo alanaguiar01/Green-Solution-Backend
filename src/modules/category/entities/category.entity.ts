@@ -1,8 +1,8 @@
-import { BaseModelEntity } from 'src/common/BaseModel.entity';
+import { BaseEntityModel } from '~/common/baseModel';
 import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'categories' })
-export class Category extends BaseModelEntity {
+export class Category extends BaseEntityModel {
   @Column({ nullable: true })
   name: string;
 }

@@ -1,6 +1,6 @@
 import { Body, Controller, Put, UseGuards } from '@nestjs/common';
-import PermissionGuard from 'src/guards/permission.guard';
-import RoleGuard from 'src/guards/role.guard';
+import PermissionGuard from '~/guards/permission.guard';
+import RoleGuard from '~/guards/role.guard';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { TokenService } from './token.service';
 

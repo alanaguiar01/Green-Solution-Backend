@@ -5,11 +5,11 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/modules/user/user.service';
+import { UserService } from '~/modules/user/user.service';
 import { AuthDto } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as argon2 from 'argon2';
-import { TokenService } from 'src/modules/token/token.service';
+import { TokenService } from '~/modules/token/token.service';
 
 @Injectable()
 export class AuthService {

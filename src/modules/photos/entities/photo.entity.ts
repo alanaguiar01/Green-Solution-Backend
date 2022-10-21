@@ -1,8 +1,8 @@
-import { BaseModelEntity } from 'src/common/BaseModel.entity';
-import { Post } from 'src/modules/post/entities/post.entity';
+import { BaseEntityModel } from '~/common/baseModel';
+import { Post } from '~/modules/post/entities/post.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 @Entity({ name: 'photos' })
-export class Photo extends BaseModelEntity {
+export class Photo extends BaseEntityModel {
   @Column({ nullable: true })
   url: string;
 

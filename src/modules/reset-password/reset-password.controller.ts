@@ -3,8 +3,8 @@ import { ResetPasswordService } from './reset-password.service';
 import { CreateResetPasswordDto } from './dto/create-reset-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import RoleGuard from 'src/guards/role.guard';
-import PermissionGuard from 'src/guards/permission.guard';
+import RoleGuard from '~/guards/role.guard';
+import PermissionGuard from '~/guards/permission.guard';
 
 @Controller()
 export class ResetPasswordController {

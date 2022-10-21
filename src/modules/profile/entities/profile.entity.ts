@@ -1,10 +1,10 @@
-import { Address } from 'src/modules/address/entities/address.entity';
-import { BaseModelEntity } from 'src/common/BaseModel.entity';
-import { Post } from 'src/modules/post/entities/post.entity';
+import { Address } from '~/modules/address/entities/address.entity';
+import { BaseEntityModel } from '~/common/baseModel';
+import { Post } from '~/modules/post/entities/post.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity({ name: 'profiles' })
-export class Profile extends BaseModelEntity {
+export class Profile extends BaseEntityModel {
   @Column()
   about: string;
 

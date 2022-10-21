@@ -15,7 +15,8 @@ import { PostModule } from './modules/post/post.module';
 import { AddressModule } from './modules/address/address.module';
 import { PhotosModule } from './modules/photos/photos.module';
 import { CategoryModule } from './modules/category/category.module';
-import { DatabaseModule } from './database/database.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeOrmAsyncConfig } from './database/config/typeorm.config';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { DatabaseModule } from './database/database.module';
         '.env.local',
       ],
     }),
-    DatabaseModule,
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     UserModule,
     AuthModule,
     TokenModule,

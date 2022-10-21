@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
@@ -7,7 +8,7 @@ import { Photo } from './entities/photo.entity';
 @Injectable()
 export class PhotosService {
   constructor(
-    @Inject('PHOTO_REPOSITORY')
+    @InjectRepository(Photo)
     private readonly photoRepository: Repository<Photo>,
   ) {}
   /**

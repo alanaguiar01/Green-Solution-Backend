@@ -12,8 +12,8 @@ import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RolePermissionsRequest } from './dto/role-permissions.dto';
-import RoleGuard from 'src/guards/role.guard';
-import PermissionGuard from 'src/guards/permission.guard';
+import RoleGuard from '~/guards/role.guard';
+import PermissionGuard from '~/guards/permission.guard';
 
 @Controller('roles')
 export class RolesController {

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
@@ -8,12 +8,13 @@ import { Socket } from 'socket.io';
 import { parse } from 'cookie';
 import { AuthService } from '../auth/auth.service';
 import { WsException } from '@nestjs/websockets';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class ChatService {
   constructor(
-    @Inject('MESSAGE_REPOSITORY')
+    @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
-    @Inject('ROOM_REPOSITORY')
+    @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
     private readonly userService: UserService,
     private readonly authService: AuthService,

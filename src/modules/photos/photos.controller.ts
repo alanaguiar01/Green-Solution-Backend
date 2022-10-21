@@ -11,8 +11,8 @@ import {
 import { PhotosService } from './photos.service';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
-import RoleGuard from 'src/guards/role.guard';
-import PermissionGuard from 'src/guards/permission.guard';
+import RoleGuard from '~/guards/role.guard';
+import PermissionGuard from '~/guards/permission.guard';
 
 @Controller('photos')
 export class PhotosController {

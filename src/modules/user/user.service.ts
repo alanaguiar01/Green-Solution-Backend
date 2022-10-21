@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from 'src/modules/auth/dto/create-user.dto';
 import { In, Repository } from 'typeorm';
 import { Permission } from '../permissions/entities/permission.entity';
@@ -10,11 +11,11 @@ import { User } from './entities/user.entity';
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('USER_REPOSITORY')
+    @InjectRepository(User)
     private userRepository: Repository<User>,
-    @Inject('ROLE_REPOSITORY')
+    @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
-    @Inject('PERMISSION_REPOSITORY')
+    @InjectRepository(Role)
     private readonly rolesRepository: Repository<Role>,
   ) {}
 
@@ -142,7 +143,7 @@ export class UserService {
     });
     user.permissions = permisionExists;
     user.roles = rolesExists;
-    user.save();
+    this.userRepository.save(user);
     return user;
   }
 }

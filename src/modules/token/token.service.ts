@@ -5,16 +5,17 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { AuthService } from 'src/modules/auth/auth.service';
-import { User } from 'src/modules/user/entities/user.entity';
-import { UserService } from 'src/modules/user/user.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from '~/modules/auth/auth.service';
+import { User } from '~/modules/user/entities/user.entity';
+import { UserService } from '~/modules/user/user.service';
 import { Repository } from 'typeorm';
 import { Token } from './entities/token.entity';
 
 @Injectable()
 export class TokenService {
   constructor(
-    @Inject('TOKEN_REPOSITORY')
+    @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,
     private readonly userService: UserService,
     @Inject(forwardRef(() => AuthService))

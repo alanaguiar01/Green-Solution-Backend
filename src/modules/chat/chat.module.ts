@@ -4,12 +4,17 @@ import { ChatController } from './chat.controller';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { ChatGateway } from './chat.gateway';
-import { DatabaseModule } from 'src/database/database.module';
-import { chatProviders } from './chat.provider';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Room } from './entities/room.entity';
+import { Message } from './entities/message.entity';
 
 @Module({
-  imports: [DatabaseModule, forwardRef(() => UserModule), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Message, Room]),
+    forwardRef(() => UserModule),
+    AuthModule,
+  ],
   controllers: [ChatController],
-  providers: [ChatService, ChatGateway, ...chatProviders],
+  providers: [ChatService, ChatGateway],
 })
 export class ChatModule {}

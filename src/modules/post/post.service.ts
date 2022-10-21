@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -7,7 +8,7 @@ import { Post } from './entities/post.entity';
 @Injectable()
 export class PostService {
   constructor(
-    @Inject('POST_REPOSITORY')
+    @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
   ) {}
   /**

@@ -1,7 +1,7 @@
-import { BaseModelEntity } from 'src/common/BaseModel.entity';
-import { Category } from 'src/modules/category/entities/category.entity';
-import { Photo } from 'src/modules/photos/entities/photo.entity';
-import { Profile } from 'src/modules/profile/entities/profile.entity';
+import { BaseEntityModel } from '~/common/baseModel';
+import { Category } from '~/modules/category/entities/category.entity';
+import { Photo } from '~/modules/photos/entities/photo.entity';
+import { Profile } from '~/modules/profile/entities/profile.entity';
 import {
   Column,
   Entity,
@@ -11,7 +11,7 @@ import {
   OneToOne,
 } from 'typeorm';
 @Entity({ name: 'posts' })
-export class Post extends BaseModelEntity {
+export class Post extends BaseEntityModel {
   @Column()
   name: string;
 
