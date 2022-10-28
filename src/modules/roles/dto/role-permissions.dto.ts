@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class RolePermissionsRequest {
@@ -6,5 +7,6 @@ export class RolePermissionsRequest {
   // @IsUUID()
   roleId: string;
   @IsArray()
+  @ApiProperty()
   permissions: string[];
 }

@@ -1,29 +1,18 @@
-import { Permission } from '../../permissions/entities/permission.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Permission } from '~/modules/permissions/entities/permission.entity';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import { BaseEntityModel } from '~/common/baseModel';
+import { ApiProperty, ApiPropertyOptional, ApiTags } from '@nestjs/swagger';
 
 @Entity({ name: 'roles' })
-export class Role {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+@ApiTags('Roles')
+export class Role extends BaseEntityModel {
   @Column({ nullable: true })
+  @ApiProperty()
   name: string;
 
-  @Column({ nullable: true })
+  @Column()
+  @ApiProperty()
   description: string;
-
-  @CreateDateColumn({
-    type: 'timestamp without time zone',
-    name: 'created_at',
-  })
-  createdAt: Date;
 
   @ManyToMany(() => Permission, { cascade: true })
   @JoinTable({
@@ -31,5 +20,6 @@ export class Role {
     joinColumns: [{ name: 'role_id' }],
     inverseJoinColumns: [{ name: 'permission_id' }],
   })
+  @ApiPropertyOptional()
   permissions: Permission[];
 }

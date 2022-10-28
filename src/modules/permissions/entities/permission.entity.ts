@@ -1,24 +1,14 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Column, Entity } from 'typeorm';
+import { BaseEntityModel } from '~/common/baseModel';
 
 @Entity({ name: 'permissions' })
-export class Permission {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Permission extends BaseEntityModel {
   @Column({ nullable: true })
+  @ApiProperty()
   name: string;
 
-  @CreateDateColumn({
-    type: 'timestamp without time zone',
-    name: 'created_at',
-  })
-  createdAt: Date;
-
   @Column()
+  @ApiPropertyOptional()
   description: string;
 }

@@ -1,5 +1,5 @@
-import { BaseEntityModel } from '../../../common/baseModel';
-import { User } from '../../user/entities/user.entity';
+import { BaseEntityModel } from '~/modules/../common/baseModel';
+import { User } from '~/modules/user/entities/user.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Room } from './room.entity';
 

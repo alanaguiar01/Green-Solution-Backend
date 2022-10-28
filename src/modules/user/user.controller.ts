@@ -7,18 +7,29 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { NotFoundSwagger } from '~/common/swagger/helpers/not-found.swagger';
+import { CreateAccessControlListUserSwagger } from '~/common/swagger/user/create-access-list-user.swagger';
+import { IndexUserSwagger } from '~/common/swagger/user/index-user.swagger';
+import { ShowUserSwagger } from '~/common/swagger/user/show-user.swagger';
 import PermissionGuard from '~/guards/permission.guard';
 import RoleGuard from '~/guards/role.guard';
 import { UserACLRequest } from './dto/user-acl-request.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
-@ApiTags('user')
+@ApiTags('User')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('allUsers')
+  @Get()
+  @ApiOperation({ summary: 'List all users of api' })
+  @ApiResponse({
+    status: 200,
+    description: 'User list successfully returned',
+    type: IndexUserSwagger,
+    isArray: true,
+  })
   @UseGuards(
     RoleGuard(['creator', 'manager', 'employer']),
     PermissionGuard(['list_user']),
@@ -27,7 +38,18 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get('oneUser/:id')
+  @Get(':id')
+  @ApiOperation({ summary: 'List one user of api' })
+  @ApiResponse({
+    status: 200,
+    description: 'User data returned successfully',
+    type: ShowUserSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+    type: NotFoundSwagger,
+  })
   @UseGuards(
     RoleGuard(['creator', 'manager', 'employer']),
     PermissionGuard(['list_user']),
@@ -36,7 +58,17 @@ export class UserController {
     return this.userService.findOneById(id);
   }
 
-  @Delete('deleteUser/:id')
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete one users of api' })
+  @ApiResponse({
+    status: 204,
+    description: 'User successfully removed',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+    type: NotFoundSwagger,
+  })
   @UseGuards(
     RoleGuard(['creator', 'manager', 'employer']),
     PermissionGuard(['delete']),
@@ -46,6 +78,17 @@ export class UserController {
   }
 
   @Post('acl')
+  @ApiOperation({ summary: 'Create access control list of users in api' })
+  @ApiResponse({
+    status: 201,
+    description: 'Create Access Control List User data returned successfully',
+    type: CreateAccessControlListUserSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+    type: NotFoundSwagger,
+  })
   // @UseGuards(RoleGuard(['creator', 'manager']))
   accessUserControl(@Body() userACLRequest: UserACLRequest) {
     return this.userService.CreateUserAccessControlListService(userACLRequest);
