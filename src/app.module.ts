@@ -17,6 +17,7 @@ import { PhotosModule } from './modules/photos/photos.module';
 import { CategoryModule } from './modules/category/category.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmAsyncConfig } from './database/config/typeorm.config';
+import { FeedbackModule } from './modules/feedback/feedback.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { typeOrmAsyncConfig } from './database/config/typeorm.config';
     AddressModule,
     PhotosModule,
     CategoryModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService],
