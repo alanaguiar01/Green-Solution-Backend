@@ -30,7 +30,17 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
         '.env.local',
       ],
     }),
-    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
+    // TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
+    TypeOrmModule.forRoot({
+      url: process.env.DATABASE_URL,
+      type: 'postgres',
+      ssl: {
+        rejectUnauthorized: false,
+      },
+      entities: ['dist/**/*.entity{.ts,.js}'],
+      synchronize: false, // This for development
+      autoLoadEntities: true,
+    }),
     UserModule,
     AuthModule,
     TokenModule,
