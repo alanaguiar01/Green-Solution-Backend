@@ -13,7 +13,7 @@ import { Role } from '~/modules/roles/entities/role.entity';
 import { Exclude } from 'class-transformer';
 import { Profile } from '~/modules/profile/entities/profile.entity';
 import { BaseEntityModel } from '~/common/baseModel';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntityModel {
@@ -31,11 +31,11 @@ export class User extends BaseEntityModel {
   password: string;
 
   @OneToOne(() => Profile)
-  @ApiProperty()
+  @ApiPropertyOptional()
   profile: Profile;
 
   @ManyToMany(() => Room, (room) => room.members)
-  @ApiProperty()
+  @ApiPropertyOptional()
   rooms: Room[];
 
   @ManyToMany(() => Role, { cascade: true, nullable: false })
@@ -44,7 +44,7 @@ export class User extends BaseEntityModel {
     joinColumns: [{ name: 'user_id' }],
     inverseJoinColumns: [{ name: 'role_id' }],
   })
-  @ApiProperty()
+  @ApiPropertyOptional()
   roles: Role[];
 
   @ManyToMany(() => Permission, { cascade: true })
@@ -53,7 +53,7 @@ export class User extends BaseEntityModel {
     joinColumns: [{ name: 'user_id' }],
     inverseJoinColumns: [{ name: 'permission_id' }],
   })
-  @ApiProperty()
+  @ApiPropertyOptional()
   permissions: Permission[];
 
   @BeforeInsert()

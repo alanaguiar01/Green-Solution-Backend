@@ -11,7 +11,7 @@ import {
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestSwagger } from '~/common/swagger/helpers/bad-request.swagger';
 import RoleGuard from '~/guards/role.guard';
 import PermissionGuard from '~/guards/permission.guard';
@@ -22,6 +22,7 @@ import { ShowFeedbackSwagger } from '~/common/swagger/feedback/show-feedback.swa
 import { UpdateFeedbackSwagger } from '~/common/swagger/feedback/update-feedback.swagger';
 
 @Controller('feedback')
+@ApiTags('Feedback')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
