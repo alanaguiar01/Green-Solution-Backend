@@ -6,12 +6,14 @@ import {
   Post,
   Body,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { NotFoundSwagger } from '~/common/swagger/helpers/not-found.swagger';
 import { CreateAccessControlListUserSwagger } from '~/common/swagger/user/create-access-list-user.swagger';
 import { IndexUserSwagger } from '~/common/swagger/user/index-user.swagger';
 import { ShowUserSwagger } from '~/common/swagger/user/show-user.swagger';
+import { JwtAuthGuard } from '~/guards/jwt-auth.guard';
 import PermissionGuard from '~/guards/permission.guard';
 import RoleGuard from '~/guards/role.guard';
 import { UserACLRequest } from './dto/user-acl-request.dto';
@@ -21,6 +23,12 @@ import { UserService } from './user.service';
 @ApiTags('User')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  me(@Request() req) {
+    return this.userService.findOneById(req.user.id);
+  }
 
   @Get()
   @ApiOperation({ summary: 'List all users of api' })

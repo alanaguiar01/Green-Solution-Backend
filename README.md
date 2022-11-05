@@ -32,6 +32,19 @@
 $ npm install
 ```
 
+# Enviroment
+
+DB_HOST
+DB_PORT
+DB_TYPE
+DB_USERNAME
+DB_PASSWORD
+DB_DATABASE
+DB_SYNCHRONIZE
+DB_LOGGING
+JWT_ACCESS_SECRET
+PORT
+
 ## Running the app
 
 ```bash
@@ -44,6 +57,16 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+## Doker
+
+# up postgres, mailhog and nodejs
+
+$ docker compose up
+
+# down postgres, mailhog and nodejs
+
+$ docker compose down
 
 ## Test
 

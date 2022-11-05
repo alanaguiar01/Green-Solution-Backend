@@ -8,7 +8,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '~/modules/user/user.service';
 import { AuthDto } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as argon2 from 'argon2';
 import { TokenService } from '~/modules/token/token.service';
 
 @Injectable()
@@ -43,7 +42,8 @@ export class AuthService {
    */
   async validateUser(authDto: AuthDto): Promise<any> {
     const user = await this.userService.findOneByEmail(authDto.email);
-    if (user && argon2.verify(user.password, authDto.password)) {
+    const validPassword = await user.checkPassword(authDto.password);
+    if (user && validPassword) {
       const { password, ...result } = user;
       return result;
     }

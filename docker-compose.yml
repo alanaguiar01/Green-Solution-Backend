@@ -1,16 +1,16 @@
 version: "3.7"
 
 services:
-  app:
-    build: .
-    entrypoint: .docker/entrypoint.sh
-    container_name: node
-    ports:
-      - 3000:3000
-    volumes:
-      - .:/home/node/app
-    depends_on:
-      - db
+  # app:
+  #   build: .
+  #   entrypoint: .docker/entrypoint.sh
+  #   container_name: node
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - .:/home/node/app
+  #   depends_on:
+  #     - db
   db:
     build: .docker/postgres
     container_name: postgresql

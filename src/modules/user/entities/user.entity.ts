@@ -60,7 +60,9 @@ export class User extends BaseEntityModel {
   async hashPassword() {
     this.password = await argon2.hash(this.password);
   }
-
+  checkPassword(password: string) {
+    return argon2.verify(this.password, password);
+  }
   toJSON(): User {
     const obj = { ...this };
     delete obj.password;
