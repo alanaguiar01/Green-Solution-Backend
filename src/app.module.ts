@@ -18,6 +18,7 @@ import { CategoryModule } from './modules/category/category.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmAsyncConfig } from './database/config/typeorm.config';
 import { FeedbackModule } from './modules/feedback/feedback.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
     PhotosModule,
     CategoryModule,
     FeedbackModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

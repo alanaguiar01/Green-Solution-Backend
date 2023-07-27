@@ -97,6 +97,7 @@ export class UserService {
       {
         name: updateUserDto.name,
         email: updateUserDto.email,
+        password: updateUserDto.password,
       },
     );
     return user;

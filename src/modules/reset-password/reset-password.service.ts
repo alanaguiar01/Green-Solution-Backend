@@ -39,7 +39,7 @@ export class ResetPasswordService {
     if (!createEmail) {
       throw new HttpException('email or token not found', HttpStatus.NOT_FOUND);
     }
-    const url = `http://localhost:4200/forgotPassword/${token}`;
+    const url = `http://localhost:3006/reset-password/${token}`;
     await this.mailerService.sendMail({
       to: email,
       subject: 'Forgot Password',
@@ -56,10 +56,10 @@ export class ResetPasswordService {
    */
   async forgotPassword({
     token,
-    confirm_password,
-    new_password,
+    password,
+    password_confirm,
   }: ForgotPasswordDto) {
-    if (new_password !== confirm_password) {
+    if (password != password_confirm) {
       throw new BadRequestException('passwords do not match');
     }
     const reset = await this.findOne(token);
@@ -68,7 +68,7 @@ export class ResetPasswordService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const hashPassword = await argon2.hash(new_password);
+    const hashPassword = await argon2.hash(password);
     return this.userService.update(user.id, { password: hashPassword });
   }
 

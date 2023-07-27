@@ -27,7 +27,8 @@
     "migration:revert": "npm run typeorm migration:revert",
     "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js seed",
     "db:refresh": "npm run typeorm schema:drop && npm run migration:run && npm run seed:run",
-    "mig": "node scripts/migration.js"
+    "mig": "node scripts/migration.js",
+    "migration:create": "sh -c 'migration:create ./src/infra/migrations/$0"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",

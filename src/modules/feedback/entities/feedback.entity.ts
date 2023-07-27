@@ -12,10 +12,6 @@ export class Feedback extends BaseEntityModel {
   @ApiProperty()
   comment: string;
 
-  @Column({ nullable: true })
-  @ApiProperty()
-  email: string;
-
   @Column({ nullable: false })
   @ApiPropertyOptional()
   screenshot: string;

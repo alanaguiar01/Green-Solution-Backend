@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBase64, IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsBase64, IsOptional, IsString } from 'class-validator';
 
 export class CreateFeedbackDto {
   @IsString()
@@ -10,13 +10,9 @@ export class CreateFeedbackDto {
   @ApiProperty()
   comment: string;
 
-  @IsEmail()
-  @ApiProperty()
-  email: string;
-
-  @IsString()
-  @IsBase64()
-  @IsOptional()
+  @IsString({ message: 'erro base64 não é string' })
+  // @IsBase64({ message: 'erro base64' })
+  @IsOptional({ message: 'erro base64 não opcional' })
   @ApiPropertyOptional()
   screenshot: string;
 }

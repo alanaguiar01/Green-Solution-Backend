@@ -12,7 +12,7 @@ import { join } from 'path';
 
 export const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
-  host: '192.168.0.6',
+  host: '127.0.0.1',
   port: Number(process.env.DB_PORT),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
@@ -22,7 +22,7 @@ export const options: DataSourceOptions & SeederOptions = {
   seeds: [MainSeeder],
   factories: ['src/database/factories/*{.ts,.js}'],
   logging: false,
-  synchronize: false,
+  synchronize: true,
 };
 
 export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {

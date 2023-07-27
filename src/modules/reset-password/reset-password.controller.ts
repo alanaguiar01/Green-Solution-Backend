@@ -29,10 +29,10 @@ export class ResetPasswordController {
     description: 'Params invalid',
     type: BadRequestSwagger,
   })
-  @UseGuards(
-    RoleGuard(['creator', 'manager', 'employer', 'user']),
-    PermissionGuard(['send_email']),
-  )
+  // @UseGuards(
+  //   RoleGuard(['creator', 'manager', 'employer', 'user']),
+  //   PermissionGuard(['send_email']),
+  // )
   async forgotPassword(@Body() email: CreateResetPasswordDto) {
     const forgotPassword =
       await this.resetPasswordService.sendEmailForgotPassword(email);
@@ -51,10 +51,10 @@ export class ResetPasswordController {
     description: 'Params invalid',
     type: BadRequestSwagger,
   })
-  @UseGuards(
-    RoleGuard(['creator', 'manager', 'employer', 'user']),
-    PermissionGuard(['forgot_password']),
-  )
+  // @UseGuards(
+  //   RoleGuard(['creator', 'manager', 'employer', 'user']),
+  //   PermissionGuard(['forgot_password']),
+  // )
   async resetForgotPassword(@Body() resetForgetPassword: ForgotPasswordDto) {
     await this.resetPasswordService.forgotPassword(resetForgetPassword);
     return { message: 'Success change your password' };

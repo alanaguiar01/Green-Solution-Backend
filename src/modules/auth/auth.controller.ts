@@ -1,4 +1,12 @@
-import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+  Req,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginUserSwagger } from '~/common/swagger/auth/login-user.swagger';
 import { CreateUserSwagger } from '~/common/swagger/auth/register-user.swagger';
@@ -6,6 +14,7 @@ import { BadRequestSwagger } from '~/common/swagger/helpers/bad-request.swagger'
 import { LocalAuthGuard } from '~/guards/local-strategy.guard';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { CookieAuthGuard } from '~/guards/ws-auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -44,7 +53,11 @@ export class AuthController {
   signin(@Request() req) {
     return this.authService.signIn(req.user);
   }
-
+  @Get('cookie')
+  @UseGuards(CookieAuthGuard)
+  testRoute() {
+    return 'Authenticated route';
+  }
   // @Get('logout')
   // logout(@Req() req: Request) {
   //   this.authService.logout(req.user['sub']);

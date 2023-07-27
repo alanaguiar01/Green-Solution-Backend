@@ -10,10 +10,10 @@ export class ForgotPasswordDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  new_password: string;
+  password: string;
 
   @IsString()
   @ApiProperty()
   @IsNotEmpty()
-  confirm_password: string;
+  password_confirm: string;
 }

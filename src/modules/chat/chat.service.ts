@@ -5,7 +5,6 @@ import { UserService } from '../user/user.service';
 import { Message } from './entities/message.entity';
 import { Room } from './entities/room.entity';
 import { Socket } from 'socket.io';
-import { parse } from 'cookie';
 import { AuthService } from '../auth/auth.service';
 import { WsException } from '@nestjs/websockets';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,10 +26,7 @@ export class ChatService {
    * @param client - The socket.io client object
    */
   initJoin(user: User, client) {
-    const roomsToJoin = [];
-    user.rooms.forEach((room) => {
-      return roomsToJoin.push(room.name);
-    });
+    const roomsToJoin = user.rooms.map((room) => room.name);
     client.join(roomsToJoin);
   }
 
@@ -40,23 +36,38 @@ export class ChatService {
    * @param {User} receiver - The user who is receiving the message.
    * @returns A string
    */
-  generateRoomName(sender: User, receiver: User): string {
-    if (sender.name.localeCompare(receiver.name) === -1) {
-      return receiver.name;
-    } else if (sender.name.localeCompare(receiver.name) === 1) {
-      return sender.name;
+
+  // private generateRoomName(sender: User, receiver: User) {
+  //   if (sender.name.localeCompare(receiver.name) === 0) {
+  //     throw new HttpException('Hata', HttpStatus.FORBIDDEN);
+  //   }
+
+  //   if (sender.name.localeCompare(receiver.name) === -1) {
+  //     return sender.name + '-' + receiver.name;
+  //   } else {
+  //     return receiver.name + '-' + sender.name;
+  //   }
+  // }
+  private generateRoomName(sender: User, receiver: User): string {
+    // console.log(`test 1${sender.name}`, `test 2${receiver.name}`);
+    if (sender.email.localeCompare(receiver.email) === -1) {
+      // firstUsername is "<" (before) secondUsername
+      return sender.email + '-' + receiver.email;
+    } else if (sender.email.localeCompare(receiver.email) === 1) {
+      // firstUsername is ">" (after) secondUsername
+      return receiver.email + '-' + sender.email;
     } else {
-      throw new HttpException('even', HttpStatus.FORBIDDEN);
+      throw new HttpException('Invalid users', HttpStatus.BAD_REQUEST);
+      // ids are equal, should throw an error
     }
   }
-
   /**
    * It checks if a private room exists between two users
    * @param {any} sender - The user who is sending the message
    * @param {any} receiver - The user that the sender wants to send a message to.
    * @returns A promise of a room
    */
-  checkPrivateRoomExists(sender: any, receiver: any): Promise<Room> {
+  checkPrivateRoomExists(sender: User, receiver: User): Promise<Room> {
     return this.roomRepository.findOne({
       where: { name: this.generateRoomName(sender, receiver) },
     });
@@ -68,9 +79,9 @@ export class ChatService {
    * @param {any} receiver - any - The receiver of the message.
    * @returns The room that was created.
    */
-  async createRoom(sender: any, receiver: any): Promise<Room> {
-    const Sender = await this.userService.findOneById(sender);
-    const Receiver = await this.userService.findOneById(receiver);
+  async createRoom(sender: User, receiver: User): Promise<Room> {
+    const Sender = await this.userService.findOneById(sender.id);
+    const Receiver = await this.userService.findOneById(receiver.id);
     if (!Receiver) {
       throw new HttpException('Receiver not found', HttpStatus.NOT_FOUND);
     }
@@ -89,8 +100,8 @@ export class ChatService {
    * @returns A message object
    */
   async createMessage(
-    sender: any,
-    receiver: any,
+    sender: string,
+    receiver: string,
     msg: string,
   ): Promise<Message> {
     const Sender = await this.userService.findOneById(sender);
@@ -99,6 +110,7 @@ export class ChatService {
     if (!room) {
       room = await this.createRoom(Sender, Receiver);
     }
+
     const message = this.messageRepository.create({
       text: msg,
       room: room,
@@ -113,18 +125,50 @@ export class ChatService {
    * @param {Socket} socket - Socket - The socket object that is connected to the client.
    * @returns The user object.
    */
+  // async getUserFromSocket(socket: Socket) {
+  //   const cookie = socket.handshake.headers.cookie;
+  //   console.log(socket.handshake.headers.cookie);
+  //   const { Authentication: authenticationToken } = parse(cookie);
+  //   const user = await this.authService.verifyToken(authenticationToken);
+  //   if (!user) {
+  //     throw new WsException('Invalid credentials.');
+  //   }
+  //   return user;
+  // }
+  // async getUserFromSocket(socket) {
+  //   const { authorization } = socket.handshake.headers;
+  //   if (!authorization || !authorization.startsWith('Bearer ')) {
+  //     throw new WsException('Invalid credentials.');
+  //   }
+
+  //   const token = authorization.substring(7); // Remover o prefixo 'Bearer '
+
+  //   const user = await this.authService.verifyToken(token);
+  //   if (!user) {
+  //     throw new WsException('Invalid credentials.');
+  //   }
+
+  //   return user;
+  // }
   async getUserFromSocket(socket: Socket) {
-    const cookie = socket.handshake.headers.cookie;
-    const { Authentication: authenticationToken } = parse(cookie);
-    const user = await this.authService.getUserFromAuthenticationToken(
-      authenticationToken,
-    );
+    const bearerToken = this.extractBearerTokenFromHeader(socket);
+
+    if (!bearerToken) {
+      throw new WsException('Bearer token not found.');
+    }
+
+    const user = await this.authService.verifyToken(bearerToken);
+
     if (!user) {
       throw new WsException('Invalid credentials.');
     }
+
     return user;
   }
-
+  private extractBearerTokenFromHeader(socket: Socket): string | undefined {
+    const authorization = socket.handshake.headers?.authorization;
+    return authorization.replace(/^Bearer\s(.*)/g, '$1');
+  }
   // createPrivateRoom(createChatDto: CreateChatDto) {
   //   return 'This action adds a new chat';
   // }

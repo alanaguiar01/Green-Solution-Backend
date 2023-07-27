@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '~/modules/user/user.service';
@@ -84,10 +85,25 @@ export class AuthService {
    * @param {string} token - The token that was passed in the request header.
    * @returns The user object
    */
-  async getUserFromAuthenticationToken(token: string) {
-    const payload = this.jwtService.verify(token);
-    if (payload.userId) {
-      return this.userService.findOneById(payload.userId);
+  // async verifyToken(token: string): Promise<any> {
+  //   try {
+  //     const decoded = this.jwtService.verify(token);
+  //     return decoded;
+  //   } catch (error) {
+  //     // Caso ocorra algum erro na verificação do token, como token inválido ou expirado, você pode tratar o erro aqui.
+  //     throw new Error('Token inválido');
+  //   }
+  // }
+  async verifyToken(token: string) {
+    try {
+      const decoded = this.jwtService.verify(token);
+      const user = await this.userService.findOneById(decoded.sub);
+      if (!user) {
+        throw new UnauthorizedException('Invalid token.');
+      }
+      return user;
+    } catch {
+      throw new UnauthorizedException('Invalid token.');
     }
   }
 }

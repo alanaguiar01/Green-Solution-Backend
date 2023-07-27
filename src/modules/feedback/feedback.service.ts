@@ -1,5 +1,10 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
@@ -21,25 +26,22 @@ export class FeedbackService {
    * @returns The feedback object
    */
   async create(createFeedbackDto: CreateFeedbackDto) {
-    if (!createFeedbackDto.type) {
-      throw new Error('type is required');
-    }
-    if (!createFeedbackDto.comment) {
-      throw new Error('type is required');
-    }
+    // if (!createFeedbackDto.type) {
+    //   throw new Error('type is required');
+    // }
+    // if (!createFeedbackDto.comment) {
+    //   throw new Error('type is required');
+    // }
     if (
       createFeedbackDto.screenshot &&
-      !createFeedbackDto.screenshot.startsWith('data:image/png:base64')
+      !createFeedbackDto.screenshot.startsWith('data:image/png;base64')
     ) {
-      throw new Error('Format invalid screenshot');
+      throw new BadRequestException('Format invalid screenshot');
     }
-    const email = await this.userService.findOneByEmail(
-      createFeedbackDto.email,
-    );
     this.feedbackRepository.create(createFeedbackDto);
     await this.mailerService.sendMail({
       subject: 'New Feedback',
-      to: `${email}`,
+      to: 'alanaguiar01@localhost.com',
       html: `
         <div style="font-family: sans-serif; font-size: 16px color: #111">
           <p>Tipo de feedback: ${createFeedbackDto.type}</p>

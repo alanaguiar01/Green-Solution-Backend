@@ -10,9 +10,9 @@ import { ResetPassword } from './entities/reset-password.entity';
   imports: [
     TypeOrmModule.forFeature([ResetPassword]),
     MailerModule.forRoot({
-      transport: { host: 'mailhog', port: 1025 },
+      transport: { host: 'localhost', port: 1025 },
       defaults: {
-        from: 'no-reply@localhost.com',
+        from: 'alanaguiar01@gmail.com',
       },
     }),
     UserModule,

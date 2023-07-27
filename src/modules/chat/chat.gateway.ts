@@ -13,11 +13,12 @@ import { UserService } from '../user/user.service';
 import { ChatService } from './chat.service';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { CreatePrivateMessageDto } from './dto/create-chat.dto';
+import { NotificationService } from '../notification/notification.service';
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: '*',
     credentials: true,
   },
 })
@@ -28,22 +29,37 @@ export class ChatGateway
     private readonly userService: UserService,
     private readonly chatService: ChatService,
     private readonly authService: AuthService,
+    private readonly notificationService: NotificationService,
   ) {}
-  connectedUsers: Map<string, string> = new Map();
+  connectedUsers: Map<string, Socket> = new Map();
   @WebSocketServer()
   server: Server;
   private logger: Logger = new Logger('AppGateway');
-  async handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    // this.logger.log('Connected User:', client.id);
     try {
+      // this.server.on('events', (data) => console.log(data));
       const user = await this.chatService.getUserFromSocket(client);
-      this.chatService.initJoin(user, client);
+      this.connectedUsers.set(client.id, client);
+      console.log(user);
+      // this.chatService.initJoin(user, client);
       this.logger.log('connected');
     } catch (err) {
       throw new WsException(err.message);
     }
   }
+
+  // @SubscribeMessage('events')
+  // @UseGuards(CookieAuthGuard)
+  // handleEvent(
+  //   @MessageBody() data: string,
+  //   @ConnectedSocket() client: Socket,
+  // ): string {
+  //   console.log(data);
+  //   return data;
+  // }
   async handleDisconnect(client: Socket) {
-    // this.connectedUsers.delete('userId');
+    this.logger.log('Disconnected User:', client.id);
     client.disconnect();
   }
   afterInit(server: Server) {
@@ -59,13 +75,49 @@ export class ChatGateway
     const receiver = await this.userService.findOneById(body.receiver);
     const createdMessage = await this.chatService.createMessage(
       authUser.id,
-      receiver,
+      receiver.id,
       body.text,
     );
     const room = await this.chatService.checkPrivateRoomExists(
-      authUser.id,
-      receiver.id,
+      authUser,
+      receiver,
     );
+    const receiverSocket = this.connectedUsers.set(receiver.id, client);
+    receiverSocket.get(receiver.id).join(room.name);
+    client.join(room.name);
+
+    this.notificationService.sendNotification({
+      receiver: receiver.id,
+      sender: authUser.id,
+      text: body.text,
+    });
+
     this.server.to(room.name).emit('outputMessage', createdMessage);
+
+    receiverSocket.get(receiver.id).emit('notification', {
+      sender: authUser.name,
+      text: body.text,
+    });
   }
 }
+// Método para conectar o socket do receptor
+// if (notificationPersist) {
+//   this.server.to('notifications_' + receiver).emit('notifications', 'oi');
+// }
+// this.notificationService.sendNotification(
+//   authUser.id,
+//   receiver.id,
+//   body.text,
+// );
+// const socketsInRoom = Array.from(
+//   this.server.sockets.adapter.rooms.get(room.name) || [],
+// );
+// const connectedSockets = socketsInRoom.map((socketId) => ({
+//   socketId,
+//   socket: this.server.sockets.sockets.get(socketId),
+// }));
+// console.log(
+//   'Sockets conectados na sala',
+//   room.name + ':',
+//   connectedSockets,
+// );

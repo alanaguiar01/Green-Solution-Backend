@@ -21,7 +21,7 @@ import { IndexFeedbackSwagger } from '~/common/swagger/feedback/index.feedback.s
 import { ShowFeedbackSwagger } from '~/common/swagger/feedback/show-feedback.swagger';
 import { UpdateFeedbackSwagger } from '~/common/swagger/feedback/update-feedback.swagger';
 
-@Controller('feedback')
+@Controller('feedbacks')
 @ApiTags('Feedback')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
@@ -38,10 +38,10 @@ export class FeedbackController {
     description: 'Params invalid',
     type: BadRequestSwagger,
   })
-  @UseGuards(
-    RoleGuard(['creator', 'manager', 'employer', 'user']),
-    PermissionGuard(['create_feedback']),
-  )
+  // @UseGuards(
+  //   RoleGuard(['creator', 'manager', 'employer', 'user']),
+  //   PermissionGuard(['create_feedback']),
+  // )
   create(@Body() createFeedbackDto: CreateFeedbackDto) {
     return this.feedbackService.create(createFeedbackDto);
   }
